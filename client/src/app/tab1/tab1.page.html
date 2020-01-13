@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Live Data
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  <ion-segment [(ngModel)]="segment" (ionChange)="onSegmentChanged()">
+    <!--Default display force data-->
+    <ion-segment-button value="force" checked>
+      <ion-label>Force</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="imu">
+      <ion-label>IMU</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <div>
+    <ion-card [hidden]="segment != 'force'">
+      <ion-card-header>
+        Force Data
+      </ion-card-header>
+      <div id="forceChartLive" style="width:100%; height:480px;"></div>
+    </ion-card>
+  
+    <ion-card [hidden]="segment != 'imu'">
+      <ion-card-header>
+        IMU Data
+      </ion-card-header>
+      <div #imuVisualizationLive style="width:100%; height:480px;"></div>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,51 @@
+# this is an auto generated file. This will be overwritten
+query GetSensor($id: ID!) {
+  getSensor(id: $id) {
+    id
+    type
+    name
+    data {
+      nextToken
+    }
+  }
+}
+query ListSensors(
+  $filter: ModelSensorFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listSensors(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      type
+      name
+    }
+    nextToken
+  }
+}
+query GetData($id: ID!) {
+  getData(id: $id) {
+    id
+    value
+    time
+    sensor {
+      id
+      type
+      name
+    }
+  }
+}
+query ListDatas(
+  $filter: ModelDataFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      value
+      time
+    }
+    nextToken
+  }
+}

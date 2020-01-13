@@ -1,0 +1,85 @@
+# this is an auto generated file. This will be overwritten
+mutation CreateSensor(
+  $input: CreateSensorInput!
+  $condition: ModelSensorConditionInput
+) {
+  createSensor(input: $input, condition: $condition) {
+    id
+    type
+    name
+    data {
+      nextToken
+    }
+  }
+}
+mutation UpdateSensor(
+  $input: UpdateSensorInput!
+  $condition: ModelSensorConditionInput
+) {
+  updateSensor(input: $input, condition: $condition) {
+    id
+    type
+    name
+    data {
+      nextToken
+    }
+  }
+}
+mutation DeleteSensor(
+  $input: DeleteSensorInput!
+  $condition: ModelSensorConditionInput
+) {
+  deleteSensor(input: $input, condition: $condition) {
+    id
+    type
+    name
+    data {
+      nextToken
+    }
+  }
+}
+mutation CreateData(
+  $input: CreateDataInput!
+  $condition: ModelDataConditionInput
+) {
+  createData(input: $input, condition: $condition) {
+    id
+    value
+    time
+    sensor {
+      id
+      type
+      name
+    }
+  }
+}
+mutation UpdateData(
+  $input: UpdateDataInput!
+  $condition: ModelDataConditionInput
+) {
+  updateData(input: $input, condition: $condition) {
+    id
+    value
+    time
+    sensor {
+      id
+      type
+      name
+    }
+  }
+}
+mutation DeleteData(
+  $input: DeleteDataInput!
+  $condition: ModelDataConditionInput
+) {
+  deleteData(input: $input, condition: $condition) {
+    id
+    value
+    time
+    sensor {
+      id
+      type
+      name
+    }
+  }
+}

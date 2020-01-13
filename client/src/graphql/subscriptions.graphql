@@ -1,0 +1,67 @@
+# this is an auto generated file. This will be overwritten
+subscription OnCreateSensor {
+  onCreateSensor {
+    id
+    type
+    name
+    data {
+      nextToken
+    }
+  }
+}
+subscription OnUpdateSensor {
+  onUpdateSensor {
+    id
+    type
+    name
+    data {
+      nextToken
+    }
+  }
+}
+subscription OnDeleteSensor {
+  onDeleteSensor {
+    id
+    type
+    name
+    data {
+      nextToken
+    }
+  }
+}
+subscription OnCreateData {
+  onCreateData {
+    id
+    value
+    time
+    sensor {
+      id
+      type
+      name
+    }
+  }
+}
+subscription OnUpdateData {
+  onUpdateData {
+    id
+    value
+    time
+    sensor {
+      id
+      type
+      name
+    }
+  }
+}
+subscription OnDeleteData {
+  onDeleteData {
+    id
+    value
+    time
+    sensor {
+      id
+      type
+      name
+    }
+  }
+}

@@ -1,0 +1,17 @@
+type Sensor @model {
+  id: ID!
+  type: SensorType!
+  name: String!
+  data: [Data] @connection(name: "SensorData")
+}
+type Data @model {
+  id: ID!
+  value: Int!
+  time: AWSDateTime!
+  sensor: Sensor! @connection(name: "SensorData")
+}
+enum SensorType {
+  force
+  accel
+  gyro
+}

@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Devices
+    </ion-title>
+    <ion-button (click)="ble.scan()" slot="end">
+      <ion-icon name="Bluetooth"></ion-icon>
+      <ion-label>Scan</ion-label>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-content>
+      {{ble.wearable.name}}
+      <ion-button *ngIf="ble.wearable.name != 'Not Connected'" (click)="ble.disconnect( ble.wearable )" class="ion-float-right" center>
+        Disconnect
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+  
+  <ion-card>
+    <ion-card-content >
+      {{ble.hmi.name}}
+      <ion-button *ngIf="ble.hmi.name != 'Not Connected'" (click)="ble.disconnect( ble.hmi )" class="ion-float-right" center>
+        Disconnect
+      </ion-button>
+    </ion-card-content>  
+  </ion-card>
+
+  <ion-list>
+    <ion-card-content ion-item *ngFor="let device of ble.scannedDevices">
+      {{device.name}} - {{device.id}} - RSSI: {{device.rssi}}
+      <ion-button class="ion-float-right" (click)="ble.connect(device)">
+        Connect
+      </ion-button>
+    </ion-card-content>
+  </ion-list>
+</ion-content>
