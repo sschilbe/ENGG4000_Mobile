@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { ChartService } from '../services/chart.service';
-import { ImuVisualizationService } from '../services/imu-visualization.service';
+import { ChartService, Chart } from '../services/chart.service';
+import { ImuVisualizationService, Visualization } from '../services/imu-visualization.service';
 import { APIService } from '../services/api.service';
 import {IonRangeSliderComponent} from "ng2-ion-range-slider";
 
@@ -13,6 +13,18 @@ import * as moment from 'moment';
 })
 export class Tab2Page {
   segment: String;
+
+  // Force Chart Data
+  chart: Chart = {
+    chartName: 'forceChartSaved',
+    chartInterval: null,
+    chartRef: null,
+    forceData: [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0], [1, 0, 0], [1, 1, 0], [1, 2, 0], [1, 3, 0]]
+  }
+
+  // IMU Visualization
+  @ViewChild("imuVisualizationSaved", { static: true } ) imuVisualizationRef: ElementRef;
+  imuVisualization: Visualization = new Visualization();
 
   // Management for current time
   start: moment.Moment = moment();
@@ -29,13 +41,11 @@ export class Tab2Page {
   // Reference to slider in view
   @ViewChild('slider', { static: true } ) slider: IonRangeSliderComponent;
 
-  // forceChart = 'forceChartSaved';
-  @ViewChild("imuVisualizationSaved", { static: true } ) imuVisualization: ElementRef;
-
   constructor(private chartService: ChartService,
               private imuVisualizer: ImuVisualizationService,
               private apiService: APIService) {
     this.segment = "force";
+    this.imuVisualization.initialized = false;
   }
   
   get startDate() : string {
@@ -99,42 +109,38 @@ export class Tab2Page {
   }
 
   
-  // ngOnInit() {
-  //   /*this.sensorReadings.forceData.subscribe( data => {
-  //     this.chartService.formatData( data );
-  //   });*/
+  ngOnInit() {
+    this.imuVisualizer.setCanvasElement( this.imuVisualization, this.imuVisualizationRef );
+  }
 
-  //   this.imuVisualizer.setCanvasElement( this.imuVisualization );
-  // }
+  onSegmentChanged() {
+    if( "force" == this.segment ) {
+      this.chartService.chart( this.chart );
 
-  // onSegmentChanged() {
-  //   if( "force" == this.segment ) {
-  //     this.chartService.chart( this.forceChart );
+      //  De-init IMU visualization
+      this.imuVisualizer.stopAnimation( this.imuVisualization );
+    } else {
+      //  De-init Chart
+      clearInterval( this.chart.chartInterval );
 
-  //     De-init IMU visualization
-  //     this.imuVisualizer.stopAnimation();
-  //   } else {
-  //     De-init Chart
-  //     clearInterval( this.chartService.chartInterval );
+      if( !this.imuVisualization.initialized ) {
+        this.imuVisualizer.initialiseWebGLObjectAndEnvironment( this.imuVisualization );
+      }
 
-  //     if( !this.imuVisualizer.initialized ) {
-  //       this.imuVisualizer.initialiseWebGLObjectAndEnvironment();
-  //     }
+      this.imuVisualizer.renderAnimation( this.imuVisualization );
+    }
+  }
 
-  //     this.imuVisualizer.renderAnimation();
-  //   }
-  // }
+  ionViewDidEnter() {
+    if( "imu" == this.segment ) {
+  //    this.imuVisualizer.renderAnimation();
+    } else {
+      this.chartService.reset( this.chart );
+    }
+  }
 
-  // ionViewDidEnter() {
-  //   if( "imu" == this.segment ) {
-  //     this.imuVisualizer.renderAnimation();
-  //   } else {
-  //     this.chartService.reset( this.forceChart );
-  //   }
-  // }
-
-  // ionViewDidLeave() {
-  //   clearInterval( this.chartService.chartInterval );
-  //   this.imuVisualizer.stopAnimation();  
-  // }
+  ionViewDidLeave() {
+    clearInterval( this.chart.chartInterval );
+    this.imuVisualizer.stopAnimation( this.imuVisualization );  
+  }
 }

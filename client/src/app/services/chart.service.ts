@@ -4,21 +4,25 @@ import * as Highcharts from 'highcharts';
 import Heatmap from 'highcharts/modules/heatmap';
 Heatmap(Highcharts)
 
+export type Chart = {
+  chartInterval: any;
+  chartName: String;
+  chartRef: any;
+  forceData: any[];
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class ChartService {
-  forceChart: any = null;
-  chartInterval: any;
-  forceData: any[] = [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0], [1, 0, 0], [1, 1, 0], [1, 2, 0], [1, 3, 0]];
 
   constructor() {
 
   }
 
-  formatData( newData ) {
-    for( let i in this.forceData ) {
-      this.forceData[i][2] = newData[i];
+  formatData( chart: Chart, newData ) {
+    for( let i in chart.forceData ) {
+      chart.forceData[i][2] = newData[i];
     }
   }
 
@@ -33,17 +37,17 @@ export class ChartService {
   }
 
   /* Chart the data */
-  chart(chartId: String) {
-    if( this.forceChart != null) {
+  chart( chart: Chart ) {
+    if( chart.chartRef != null) {
       return
     }
 
-    if( chartId === 'forceChartLive') {
-      this.forceChart = Highcharts.chart('forceChartLive', {
+    if( chart.chartName === 'forceChartLive') {
+      chart.chartRef = Highcharts.chart('forceChartLive', {
         chart: {
           type: 'heatmap',
           animation: false,
-          marginTop: 40,
+          marginTop: 0,
           marginBottom: 80,
           plotBorderWidth: 1
         },
@@ -69,7 +73,7 @@ export class ChartService {
         },
   
         title: {
-          text: 'Force Data'
+          text: undefined
         },
   
         xAxis: {
@@ -106,12 +110,12 @@ export class ChartService {
         }
       });
     } else {
-      this.forceChart = Highcharts.chart('forceChartSaved', {
+      chart.chartRef = Highcharts.chart('forceChartSaved', {
         chart: {
           type: 'heatmap',
           animation: false,
-          marginTop: 40,
-          marginBottom: 80,
+          marginTop: 0,
+          marginBottom: 30,
           plotBorderWidth: 1
         },
   
@@ -136,7 +140,7 @@ export class ChartService {
         },
   
         title: {
-          text: 'Force Data'
+          text: undefined
         },
   
         xAxis: {
@@ -161,7 +165,7 @@ export class ChartService {
           margin: 0,
           verticalAlign: 'top',
           y: 25,
-          symbolHeight: 280
+          symbolHeight: 220
         },
   
         exporting: {
@@ -176,11 +180,11 @@ export class ChartService {
   }
 
   /* Chart the data, reset interval */
-  reset( chartId: String) {
-    this.chart( chartId );
-    clearInterval( this.chartInterval );
+  reset( chart: Chart ) {
+    this.chart( chart );
+    clearInterval( chart.chartInterval );
     setInterval( () => {
-      this.chartInterval = this.forceChart.series[0].setData( this.forceData, true, false, false );
+      chart.chartInterval = chart.chartRef.series[0].setData( chart.forceData, true, false, false );
     }, 20 );
   }
 }

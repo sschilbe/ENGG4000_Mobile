@@ -3,9 +3,9 @@
     <ion-title>
       Devices
     </ion-title>
-    <ion-button (click)="ble.scan()" slot="end">
+    <ion-button (click)="ble.scan()" [disabled]="ble.scanning" slot="end">
       <ion-icon name="Bluetooth"></ion-icon>
-      <ion-label>Scan</ion-label>
+      <ion-label>{{ble.scanning ? 'Scanning' : 'Scan'}}</ion-label>
     </ion-button>
   </ion-toolbar>
 </ion-header>

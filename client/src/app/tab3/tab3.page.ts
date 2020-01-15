@@ -8,7 +8,9 @@ import { BleService } from '../services/ble.service';
 })
 export class Tab3Page {
 
+  enabledInterval = null;
   constructor( private ble : BleService ) {
+
   }
 
   ionViewWillEnter() {

@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { APIService, SensorType } from '../services/api.service';
 import * as moment from 'moment';
-import { Sensor } from '../classes/item.class';
 
 @Injectable({
   providedIn: 'root'
@@ -31,16 +30,18 @@ export class SensorReadingsService {
     
   }
 
-  updateForceData( data : Uint8Array ) {
+  updateForceData( data : Uint16Array ) {
     this.forceDataSource.next( data );
     /* Upload data to the cloud */
-    for( let i in this.forceSensors ) {
+
+    // Uncomment Below to upload data to cloud DB
+    /*for( let i in this.forceSensors ) {
       this.apiService.CreateData({
         value: data[i],
         time: moment().format(),
         dataSensorId: this.forceSensors[i].id
       });
-    }
+    }*.
   }
 
   updateAccelData( data : Uint8Array ) {

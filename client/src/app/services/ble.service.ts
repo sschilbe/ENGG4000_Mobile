@@ -2,7 +2,6 @@ import { Injectable, NgZone } from '@angular/core';
 import { BLE } from '@ionic-native/ble/ngx'
 import { NavController, ToastController } from '@ionic/angular';
 import { SensorReadingsService } from '../services/sensor-readings.service';
-import { APIService } from './api.service';
 
 let not_connected = "Not Connected";
 
@@ -23,24 +22,26 @@ export class BleService {
     name: not_connected
   };
 
+  scanning: boolean = false;
+
   constructor(private ble: BLE,
     public navCtrl: NavController,
     private toastCtrl: ToastController,
     private ngZone: NgZone,
-    private sensorReadings: SensorReadingsService,
-    private apiService: APIService ) {
+    private sensorReadings: SensorReadingsService ) {
+
   }
 
   scan() {
-    this.setStatus('Scanning for Bluetooth LE Devices');
     this.scannedDevices = [];  // clear list
 
+    this.scanning = true;
     this.ble.scan([], 5).subscribe( // scanning for 5 seconds on one tap
       device => this.onDeviceDiscovered(device), 
       error => this.scanError(error)
     );
 
-    setTimeout(this.setStatus.bind(this), 5000, 'Scan complete');
+    setTimeout( () => this.scanning = false, 5000 );
   }
 
   connect( device ) {
@@ -83,26 +84,19 @@ export class BleService {
 
   // If location permission is denied, you'll end up here
   async scanError(error) {
-    this.setStatus('Error ' + error);
-      let toast = await this.toastCtrl.create({
-        message: 'Error scanning for Bluetooth low energy devices',
-        position: 'bottom',
-        duration: 5000
-      });
-    toast.present();
-  }
-
-  setStatus(message) {
-    this.ngZone.run(() => {
-      this.statusMessage = message;
+    let toast = await this.toastCtrl.create({
+      message: 'Error scanning for Bluetooth low energy devices',
+      position: 'bottom',
+      duration: 5000
     });
+    toast.present();
   }
 
   startForceNotifications() {
     var device = this.wearable;
     this.ble.startNotification( device.id, device.characteristics[8].service, device.characteristics[8].characteristic ).subscribe(
       buffer => {
-        var array = new Uint8Array(buffer);
+        var array = new Uint16Array(buffer);
         this.sensorReadings.updateForceData( array );
     });
   }

@@ -1,90 +1,31 @@
 import { Injectable, ElementRef, ViewChild } from '@angular/core';
 import * as THREE from 'three';
 
+export class Visualization {
+  public initialized: any;     // Has this visualization element been initialized
+  canvasEl: ElementRef; // Dom object reference
+  element: any;         // Defines an object for referencing the DOM element where the WebGL object will be rendered to
+  scene: any;           // ThreeJS needs a scene to render a WebGL object - this will act as an object reference for handling that requirement
+  camera: any;          // ThreeJS requires a camera for WebGL object generation - this will act as an object reference for handling that requirement
+  renderer: any;        // ThreeJS requires a renderer for rendering the generated WebGL object to the page DOM element - this will act as an object reference for handling that requirement
+  geometry: any;        // Define a Geometry object for subsequent object rendering
+  material: any;        // Define a Material object for subsequent object rendering
+  cylinder: any;        // Define a property for storing a reference to a polygon mesh object
+  frame: any
+
+  constructor(){}
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class ImuVisualizationService {
-  /**
-  * @name canvasEl
-  * @type {object}
-  * @private
-  * @description Dom object reference
-  */
-  canvasEl: ElementRef;
-
-  /**
-  * @name _ELEMENT
-  * @type {object}
-  * @private
-  * @description      Defines an object for referencing the DOM element
-            where the WebGL object will be rendered to
-  */
-  private _ELEMENT : any;
-
-  /**
-  * @name _SCENE
-  * @type {object}
-  * @private
-  * @description      ThreeJS needs a scene to render a WebGL object - this
-            will act as an object reference for handling that requirement
-  */
-  private _SCENE;
-
-  /**
-  * @name _CAMERA
-  * @type {object}
-  * @private
-  * @description      ThreeJS requires a camera for WebGL object generation - this
-            will act as an object reference for handling that requirement
-  */
-  private _CAMERA;
-
-  /**
-  * @name renderer
-  * @type {object}
-  * @public
-  * @description      ThreeJS requires a renderer for rendering the generated WebGL
-            object to the page DOM element - this will act as an object
-            reference for handling that requirement
-  */
-  public renderer;
-
-  /**
-  * @name _GEOMETRY
-  * @type {object}
-  * @private
-  * @description      Define a Geometry object for subsequent object rendering
-  */
-  private _GEOMETRY;
-
-  /**
-  * @name _MATERIAL
-  * @type {object}
-  * @private
-  * @description      Define a Material object for subsequent object rendering
-  */
-  public _MATERIAL;
-
-  /**
-  * @name _CUBE
-  * @type {object}
-  * @private
-  * @description      Define a property for storing a reference to a polygon mesh object
-  */
-  public _CUBE;
-
-  /* Has this service been initialized or not */
-  public initialized = false;
-
-
-  public _FRAME;
 
   constructor(){}
 
   /* Sets the canvas element, must be done before displaying */
-  setCanvasElement( element ) {
-    this.canvasEl = element;
+  setCanvasElement( visualization : Visualization, element ) {
+    visualization.canvasEl = element;
   }
 
   /**
@@ -95,20 +36,20 @@ export class ImuVisualizationService {
   * @method initialiseWebGLObjectAndEnvironment
   * @return {none}
   */
-  initialiseWebGLObjectAndEnvironment() : void
+  initialiseWebGLObjectAndEnvironment( visualization: Visualization ) : void
   {
-    if( this.initialized ) {
+    if( visualization.initialized ) {
       return;
     }
 
-    this.initialized = true;
+    visualization.initialized = true;
     // Reference the DOM element that the WebGL generated object
     // will be assigned to
-    this._ELEMENT = this.canvasEl.nativeElement;
+    visualization.element = visualization.canvasEl.nativeElement;
 
     // Define a new ThreeJS scene
-    this._SCENE = new THREE.Scene();
-    this._SCENE.background = new THREE.Color( 0xffffff );
+    visualization.scene = new THREE.Scene();
+    visualization.scene.background = new THREE.Color( 0xffffff );
     
     // Define a new ThreeJS camera from the following types:
     /*
@@ -119,33 +60,36 @@ export class ImuVisualizationService {
                       for 3D rendering [designed to mimic the way the human eye sees])
         4. StereoCamera			(Dual PerspectiveCameras - used for 3D effects such as parallax barrier)
     */
-    this._CAMERA = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-    this._CAMERA.position.set( 0, -1, 0 );
+    visualization.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+    visualization.camera.position.set( 0, -1, 0 );
 
     // Define an object to manage display of ThreeJS scene
-    this.renderer = new THREE.WebGLRenderer();
+    visualization.renderer = new THREE.WebGLRenderer();
 
     // Resizes the output canvas to match the supplied width/height parameters
-    this.renderer.setSize( window.innerWidth, window.innerHeight );
+    visualization.renderer.setSize( window.innerWidth, window.innerHeight );
 
     // Attach the canvas, where the renderer draws the scene, to the specified DOM element
-    this._ELEMENT.appendChild( this.renderer.domElement );
+    visualization.element.appendChild( visualization.renderer.domElement );
 
     // BoxGeometry class allows us to create a cube (with width, height and depth dimensions supplied as
     // parameters - default is 1 for these values)
-    this._GEOMETRY = new THREE.BoxGeometry( 1, 1, 1 );
+    //visualization.geometry = new THREE.BoxGeometry( 1, 1, 1 );
 
+    // CylinderGeometry class allows us to create a cylinder
+    visualization.geometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
+    
     // Define the material (and its appearance) for drawing the geometry to the scene
-    this._MATERIAL = new THREE.MeshNormalMaterial();
+    visualization.material = new THREE.MeshNormalMaterial();
 
     // Use the Mesh class to define a polygon mesh based object with the supplied geometry and material objects
-    this._CUBE = new THREE.Mesh( this._GEOMETRY, this._MATERIAL );
+    visualization.cylinder = new THREE.Mesh( visualization.geometry, visualization.material );
 
     // Add the object to the scene
-    this._SCENE.add(this._CUBE);
+    visualization.scene.add( visualization.cylinder );
 
     // Define the depth position of the camera
-    this._CAMERA.position.z = 4;
+    visualization.camera.position.z = 30;
   }
 
   /**
@@ -156,19 +100,19 @@ export class ImuVisualizationService {
   * @method animate
   * @return {none}
   */
-  private _animate () : void
+  private _animate ( visualization : Visualization ) : void
   {
-    this._FRAME = requestAnimationFrame(() =>
+    visualization.frame = requestAnimationFrame(() =>
     {
-        this._animate();
+        this._animate( visualization );
     });
 
     // Define rotation speeds on x and y axes - lower values means lower speeds
-    this._CUBE.rotation.x += 0.15;
-    this._CUBE.rotation.y += 0.15;
+    visualization.cylinder.rotation.x += 0.15;
+    visualization.cylinder.rotation.y += 0.15;
 
     // Render the scene (will be called using the requestAnimationFrame method to ensure the cube is constantly animated)
-    this.renderer.render(this._SCENE, this._CAMERA);
+    visualization.renderer.render( visualization.scene, visualization.camera );
   };
 
   /**
@@ -178,9 +122,9 @@ export class ImuVisualizationService {
   * @method _renderAnimation
   * @return {none}
   */
-  renderAnimation() : void
+  renderAnimation( visualization: Visualization) : void
   {
-    this._animate();
+    this._animate( visualization );
   }
 
   /**
@@ -190,8 +134,8 @@ export class ImuVisualizationService {
    * @method _stopAnimation
    * @return {none}
    */
-  stopAnimation() : void
+  stopAnimation( visualization: Visualization ) : void
   {
-    cancelAnimationFrame( this._FRAME );
+    cancelAnimationFrame( visualization.frame );
   }
 }
