@@ -1,17 +1,35 @@
-type Sensor @model {
+type Session @model {
   id: ID!
-  type: SensorType!
   name: String!
-  data: [Data] @connection(name: "SensorData")
+  data: [Data] @connection(keyName: "bySession", fields: ["id"], name: "SessionData")
+  tags: [Tag] @connection(keyName: "bySession", fields: ["id"], name: "SessionTag")
 }
-type Data @model {
+
+type Data @model 
+  @key(name: "bySession", fields: ["sessionID"], queryField: "dataBySessionId")
+{  
   id: ID!
-  value: Int!
+  sessionID: ID!
+  value: [Int]!
   time: AWSDateTime!
-  sensor: Sensor! @connection(name: "SensorData")
 }
-enum SensorType {
-  force
-  accel
-  gyro
+
+input CreateDataInput {
+  id: ID
+  values: [Int]!
+  time: AWSDateTime!
+  dataSessionId: ID!
+}
+
+type Tag @model
+  @key(name: "bySession", fields: ["sessionID"], queryField: "tagBySessionId")
+{
+  id: ID!
+  sessionID: ID!
+  name: String!
+}
+
+type Mutation {
+  batchAddData( data: [CreateDataInput] ): [Data]
+  batchDeleteData( ids: [ID] ): [Data]
 }

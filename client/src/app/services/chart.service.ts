@@ -89,7 +89,7 @@ export class ChartService {
             [0.5, '#fffbbc'],
             [0.9, '#c4463a']
           ],
-          softMax: 100
+          softMax: 4095
         },
   
         legend: {
@@ -156,7 +156,7 @@ export class ChartService {
             [0.5, '#fffbbc'],
             [0.9, '#c4463a']
           ],
-          softMax: 100
+          softMax: 4095
         },
   
         legend: {

@@ -1,23 +1,24 @@
 # this is an auto generated file. This will be overwritten
-query GetSensor($id: ID!) {
-  getSensor(id: $id) {
+query GetSession($id: ID!) {
+  getSession(id: $id) {
     id
-    type
     name
     data {
       nextToken
     }
+    tags {
+      nextToken
+    }
   }
 }
-query ListSensors(
-  $filter: ModelSensorFilterInput
+query ListSessions(
+  $filter: ModelSessionFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listSensors(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  listSessions(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      type
       name
     }
     nextToken
@@ -26,13 +27,9 @@ query ListSensors(
 query GetData($id: ID!) {
   getData(id: $id) {
     id
+    sessionID
     value
     time
-    sensor {
-      id
-      type
-      name
-    }
   }
 }
 query ListDatas(
@@ -43,8 +40,71 @@ query ListDatas(
   listDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      sessionID
       value
       time
+    }
+    nextToken
+  }
+}
+query GetTag($id: ID!) {
+  getTag(id: $id) {
+    id
+    sessionID
+    name
+  }
+}
+query ListTags($filter: ModelTagFilterInput, $limit: Int, $nextToken: String) {
+  listTags(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      sessionID
+      name
+    }
+    nextToken
+  }
+}
+query DataBySessionId(
+  $sessionID: ID
+  $sortDirection: ModelSortDirection
+  $filter: ModelDataFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  dataBySessionId(
+    sessionID: $sessionID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      sessionID
+      value
+      time
+    }
+    nextToken
+  }
+}
+query TagBySessionId(
+  $sessionID: ID
+  $sortDirection: ModelSortDirection
+  $filter: ModelTagFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  tagBySessionId(
+    sessionID: $sessionID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      sessionID
+      name
     }
     nextToken
   }

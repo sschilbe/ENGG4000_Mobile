@@ -1,39 +1,61 @@
 # this is an auto generated file. This will be overwritten
-mutation CreateSensor(
-  $input: CreateSensorInput!
-  $condition: ModelSensorConditionInput
-) {
-  createSensor(input: $input, condition: $condition) {
+mutation BatchAddData($data: [CreateDataInput]) {
+  batchAddData(data: $data) {
     id
-    type
+    sessionID
+    value
+    time
+  }
+}
+mutation BatchDeleteData($ids: [ID]) {
+  batchDeleteData(ids: $ids) {
+    id
+    sessionID
+    value
+    time
+  }
+}
+mutation CreateSession(
+  $input: CreateSessionInput!
+  $condition: ModelSessionConditionInput
+) {
+  createSession(input: $input, condition: $condition) {
+    id
     name
     data {
       nextToken
     }
-  }
-}
-mutation UpdateSensor(
-  $input: UpdateSensorInput!
-  $condition: ModelSensorConditionInput
-) {
-  updateSensor(input: $input, condition: $condition) {
-    id
-    type
-    name
-    data {
+    tags {
       nextToken
     }
   }
 }
-mutation DeleteSensor(
-  $input: DeleteSensorInput!
-  $condition: ModelSensorConditionInput
+mutation UpdateSession(
+  $input: UpdateSessionInput!
+  $condition: ModelSessionConditionInput
 ) {
-  deleteSensor(input: $input, condition: $condition) {
+  updateSession(input: $input, condition: $condition) {
     id
-    type
     name
     data {
+      nextToken
+    }
+    tags {
+      nextToken
+    }
+  }
+}
+mutation DeleteSession(
+  $input: DeleteSessionInput!
+  $condition: ModelSessionConditionInput
+) {
+  deleteSession(input: $input, condition: $condition) {
+    id
+    name
+    data {
+      nextToken
+    }
+    tags {
       nextToken
     }
   }
@@ -44,13 +66,9 @@ mutation CreateData(
 ) {
   createData(input: $input, condition: $condition) {
     id
+    sessionID
     value
     time
-    sensor {
-      id
-      type
-      name
-    }
   }
 }
 mutation UpdateData(
@@ -59,13 +77,9 @@ mutation UpdateData(
 ) {
   updateData(input: $input, condition: $condition) {
     id
+    sessionID
     value
     time
-    sensor {
-      id
-      type
-      name
-    }
   }
 }
 mutation DeleteData(
@@ -74,12 +88,38 @@ mutation DeleteData(
 ) {
   deleteData(input: $input, condition: $condition) {
     id
+    sessionID
     value
     time
-    sensor {
-      id
-      type
-      name
-    }
+  }
+}
+mutation CreateTag(
+  $input: CreateTagInput!
+  $condition: ModelTagConditionInput
+) {
+  createTag(input: $input, condition: $condition) {
+    id
+    sessionID
+    name
+  }
+}
+mutation UpdateTag(
+  $input: UpdateTagInput!
+  $condition: ModelTagConditionInput
+) {
+  updateTag(input: $input, condition: $condition) {
+    id
+    sessionID
+    name
+  }
+}
+mutation DeleteTag(
+  $input: DeleteTagInput!
+  $condition: ModelTagConditionInput
+) {
+  deleteTag(input: $input, condition: $condition) {
+    id
+    sessionID
+    name
   }
 }

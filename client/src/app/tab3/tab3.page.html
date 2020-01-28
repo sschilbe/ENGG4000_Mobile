@@ -31,7 +31,7 @@
 
   <ion-list>
     <ion-card-content ion-item *ngFor="let device of ble.scannedDevices">
-      {{device.name}} - {{device.id}} - RSSI: {{device.rssi}}
+      {{device.name}} - {{device.id}}
       <ion-button class="ion-float-right" (click)="ble.connect(device)">
         Connect
       </ion-button>

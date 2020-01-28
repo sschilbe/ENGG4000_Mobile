@@ -2,10 +2,8 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 
 import { SensorReadingsService } from '../services/sensor-readings.service';
 
-import { Sensor } from '../classes/item.class';
 import { ImuVisualizationService, Visualization } from '../services/imu-visualization.service';
 import { ChartService, Chart } from '../services/chart.service';
-import { APIService } from '../services/api.service';
 
 @Component({
   selector: 'app-tab1',

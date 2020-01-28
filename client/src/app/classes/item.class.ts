@@ -6,29 +6,38 @@ export enum SensorType {
   Gyro  = "gyro"
 }
 
-export class Sensor {
-  id : number;
-  type : SensorType;
-  name : string;
-  data : Array<Data>;
+export class Data {
+  id: string;
+  timestamp: Date;
+  values: Array<number>;
+  
+  constructor( params ) {
+    this.id = params.id || null;
+    this.timestamp = params.timestamp;
+    this.values = params.values;
+  }
+}
+  
+export class Session {
+  id: string;
+  name: string;
+  tags: Array<Tag>;
+  data: Array<Data>;
 
   constructor( params ) {
     this.id = params.id;
-    this.type = params.type;
     this.name = params.name;
-    this.data = params.data || [];
+    this.tags = params.tags;
+    this.data = params.data;
   }
 }
 
-export class Data {
-    public id: number;
-    public timestamp: Date;
-    public value: number;
-    
-    constructor( params ) {
-      this.id = params.id || null;
-      this.timestamp = params.timestamp;
-      this.value = params.value;
-    }
+export class Tag {
+  id: string;
+  name: string;
+
+  constructor( params ) {
+    this.id = params.id;
+    this.name = params.name;
+  }
 }
-  

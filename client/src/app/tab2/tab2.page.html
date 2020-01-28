@@ -41,18 +41,9 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="6">
-        <ion-item>
-          <ion-label position="stacked">Start</ion-label>
-          <ion-datetime [(ngModel)]="startDate" display-format="YYYY-MM-DD HH:mm:ss" (ionChange)="startDateValidation($event)"></ion-datetime>
-        </ion-item>
-      </ion-col>
-      <ion-col size="6">    
-        <ion-item>
-          <ion-label position="stacked">End</ion-label>
-          <ion-datetime [(ngModel)]="endDate" display-format="YYYY-MM-DD HH:mm:ss" (ionChange)="endDateValidation($event)"></ion-datetime>
-        </ion-item>
-      </ion-col>
+      <ion-select (ionChange)="sessionChanged($event)" placeholder="Select a session">
+        <ion-select-option *ngFor="let session of sessions" [value]="session">{{session.name}}</ion-select-option>
+      </ion-select>
     </ion-row>
   </div>
 

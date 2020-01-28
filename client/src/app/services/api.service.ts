@@ -5,29 +5,23 @@ import API, { graphqlOperation } from "@aws-amplify/api";
 import { GraphQLResult } from "@aws-amplify/api/lib/types";
 import * as Observable from "zen-observable";
 
-export type CreateSensorInput = {
+export type CreateDataInput = {
   id?: string | null;
-  type: SensorType;
+  values: Array<number | null>;
+  time: string;
+  dataSessionId: string;
+};
+
+export type CreateSessionInput = {
+  id?: string | null;
   name: string;
 };
 
-export enum SensorType {
-  force = "force",
-  accel = "accel",
-  gyro = "gyro"
-}
-
-export type ModelSensorConditionInput = {
-  type?: ModelSensorTypeInput | null;
+export type ModelSessionConditionInput = {
   name?: ModelStringInput | null;
-  and?: Array<ModelSensorConditionInput | null> | null;
-  or?: Array<ModelSensorConditionInput | null> | null;
-  not?: ModelSensorConditionInput | null;
-};
-
-export type ModelSensorTypeInput = {
-  eq?: SensorType | null;
-  ne?: SensorType | null;
+  and?: Array<ModelSessionConditionInput | null> | null;
+  or?: Array<ModelSessionConditionInput | null> | null;
+  not?: ModelSessionConditionInput | null;
 };
 
 export type ModelStringInput = {
@@ -69,61 +63,22 @@ export type ModelSizeInput = {
   between?: Array<number | null> | null;
 };
 
-export type UpdateSensorInput = {
+export type UpdateSessionInput = {
   id: string;
-  type?: SensorType | null;
   name?: string | null;
 };
 
-export type DeleteSensorInput = {
+export type DeleteSessionInput = {
   id?: string | null;
-};
-
-export type CreateDataInput = {
-  id?: string | null;
-  value: number;
-  time: string;
-  dataSensorId: string;
 };
 
 export type ModelDataConditionInput = {
+  sessionID?: ModelIDInput | null;
   value?: ModelIntInput | null;
   time?: ModelStringInput | null;
   and?: Array<ModelDataConditionInput | null> | null;
   or?: Array<ModelDataConditionInput | null> | null;
   not?: ModelDataConditionInput | null;
-};
-
-export type ModelIntInput = {
-  ne?: number | null;
-  eq?: number | null;
-  le?: number | null;
-  lt?: number | null;
-  ge?: number | null;
-  gt?: number | null;
-  between?: Array<number | null> | null;
-  attributeExists?: boolean | null;
-  attributeType?: ModelAttributeTypes | null;
-};
-
-export type UpdateDataInput = {
-  id: string;
-  value?: number | null;
-  time?: string | null;
-  dataSensorId?: string | null;
-};
-
-export type DeleteDataInput = {
-  id?: string | null;
-};
-
-export type ModelSensorFilterInput = {
-  id?: ModelIDInput | null;
-  type?: ModelSensorTypeInput | null;
-  name?: ModelStringInput | null;
-  and?: Array<ModelSensorFilterInput | null> | null;
-  or?: Array<ModelSensorFilterInput | null> | null;
-  not?: ModelSensorFilterInput | null;
 };
 
 export type ModelIDInput = {
@@ -142,8 +97,64 @@ export type ModelIDInput = {
   size?: ModelSizeInput | null;
 };
 
+export type ModelIntInput = {
+  ne?: number | null;
+  eq?: number | null;
+  le?: number | null;
+  lt?: number | null;
+  ge?: number | null;
+  gt?: number | null;
+  between?: Array<number | null> | null;
+  attributeExists?: boolean | null;
+  attributeType?: ModelAttributeTypes | null;
+};
+
+export type UpdateDataInput = {
+  id: string;
+  sessionID?: string | null;
+  value?: Array<number | null> | null;
+  time?: string | null;
+};
+
+export type DeleteDataInput = {
+  id?: string | null;
+};
+
+export type CreateTagInput = {
+  id?: string | null;
+  sessionID: string;
+  name: string;
+};
+
+export type ModelTagConditionInput = {
+  sessionID?: ModelIDInput | null;
+  name?: ModelStringInput | null;
+  and?: Array<ModelTagConditionInput | null> | null;
+  or?: Array<ModelTagConditionInput | null> | null;
+  not?: ModelTagConditionInput | null;
+};
+
+export type UpdateTagInput = {
+  id: string;
+  sessionID?: string | null;
+  name?: string | null;
+};
+
+export type DeleteTagInput = {
+  id?: string | null;
+};
+
+export type ModelSessionFilterInput = {
+  id?: ModelIDInput | null;
+  name?: ModelStringInput | null;
+  and?: Array<ModelSessionFilterInput | null> | null;
+  or?: Array<ModelSessionFilterInput | null> | null;
+  not?: ModelSessionFilterInput | null;
+};
+
 export type ModelDataFilterInput = {
   id?: ModelIDInput | null;
+  sessionID?: ModelIDInput | null;
   value?: ModelIntInput | null;
   time?: ModelStringInput | null;
   and?: Array<ModelDataFilterInput | null> | null;
@@ -151,35 +162,74 @@ export type ModelDataFilterInput = {
   not?: ModelDataFilterInput | null;
 };
 
-export type CreateSensorMutation = {
-  __typename: "Sensor";
+export type ModelTagFilterInput = {
+  id?: ModelIDInput | null;
+  sessionID?: ModelIDInput | null;
+  name?: ModelStringInput | null;
+  and?: Array<ModelTagFilterInput | null> | null;
+  or?: Array<ModelTagFilterInput | null> | null;
+  not?: ModelTagFilterInput | null;
+};
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC"
+}
+
+export type BatchAddDataMutation = {
+  __typename: "Data";
   id: string;
-  type: SensorType;
+  sessionID: string;
+  value: Array<number | null>;
+  time: string;
+};
+
+export type BatchDeleteDataMutation = {
+  __typename: "Data";
+  id: string;
+  sessionID: string;
+  value: Array<number | null>;
+  time: string;
+};
+
+export type CreateSessionMutation = {
+  __typename: "Session";
+  id: string;
   name: string;
   data: {
     __typename: "ModelDataConnection";
     nextToken: string | null;
   } | null;
+  tags: {
+    __typename: "ModelTagConnection";
+    nextToken: string | null;
+  } | null;
 };
 
-export type UpdateSensorMutation = {
-  __typename: "Sensor";
+export type UpdateSessionMutation = {
+  __typename: "Session";
   id: string;
-  type: SensorType;
   name: string;
   data: {
     __typename: "ModelDataConnection";
     nextToken: string | null;
   } | null;
+  tags: {
+    __typename: "ModelTagConnection";
+    nextToken: string | null;
+  } | null;
 };
 
-export type DeleteSensorMutation = {
-  __typename: "Sensor";
+export type DeleteSessionMutation = {
+  __typename: "Session";
   id: string;
-  type: SensorType;
   name: string;
   data: {
     __typename: "ModelDataConnection";
+    nextToken: string | null;
+  } | null;
+  tags: {
+    __typename: "ModelTagConnection";
     nextToken: string | null;
   } | null;
 };
@@ -187,59 +237,67 @@ export type DeleteSensorMutation = {
 export type CreateDataMutation = {
   __typename: "Data";
   id: string;
-  value: number;
+  sessionID: string;
+  value: Array<number | null>;
   time: string;
-  sensor: {
-    __typename: "Sensor";
-    id: string;
-    type: SensorType;
-    name: string;
-  };
 };
 
 export type UpdateDataMutation = {
   __typename: "Data";
   id: string;
-  value: number;
+  sessionID: string;
+  value: Array<number | null>;
   time: string;
-  sensor: {
-    __typename: "Sensor";
-    id: string;
-    type: SensorType;
-    name: string;
-  };
 };
 
 export type DeleteDataMutation = {
   __typename: "Data";
   id: string;
-  value: number;
+  sessionID: string;
+  value: Array<number | null>;
   time: string;
-  sensor: {
-    __typename: "Sensor";
-    id: string;
-    type: SensorType;
-    name: string;
-  };
 };
 
-export type GetSensorQuery = {
-  __typename: "Sensor";
+export type CreateTagMutation = {
+  __typename: "Tag";
   id: string;
-  type: SensorType;
+  sessionID: string;
+  name: string;
+};
+
+export type UpdateTagMutation = {
+  __typename: "Tag";
+  id: string;
+  sessionID: string;
+  name: string;
+};
+
+export type DeleteTagMutation = {
+  __typename: "Tag";
+  id: string;
+  sessionID: string;
+  name: string;
+};
+
+export type GetSessionQuery = {
+  __typename: "Session";
+  id: string;
   name: string;
   data: {
     __typename: "ModelDataConnection";
     nextToken: string | null;
   } | null;
+  tags: {
+    __typename: "ModelTagConnection";
+    nextToken: string | null;
+  } | null;
 };
 
-export type ListSensorsQuery = {
-  __typename: "ModelSensorConnection";
+export type ListSessionsQuery = {
+  __typename: "ModelSessionConnection";
   items: Array<{
-    __typename: "Sensor";
+    __typename: "Session";
     id: string;
-    type: SensorType;
     name: string;
   } | null> | null;
   nextToken: string | null;
@@ -248,14 +306,9 @@ export type ListSensorsQuery = {
 export type GetDataQuery = {
   __typename: "Data";
   id: string;
-  value: number;
+  sessionID: string;
+  value: Array<number | null>;
   time: string;
-  sensor: {
-    __typename: "Sensor";
-    id: string;
-    type: SensorType;
-    name: string;
-  };
 };
 
 export type ListDatasQuery = {
@@ -263,41 +316,92 @@ export type ListDatasQuery = {
   items: Array<{
     __typename: "Data";
     id: string;
-    value: number;
+    sessionID: string;
+    value: Array<number | null>;
     time: string;
   } | null> | null;
   nextToken: string | null;
 };
 
-export type OnCreateSensorSubscription = {
-  __typename: "Sensor";
+export type GetTagQuery = {
+  __typename: "Tag";
   id: string;
-  type: SensorType;
+  sessionID: string;
+  name: string;
+};
+
+export type ListTagsQuery = {
+  __typename: "ModelTagConnection";
+  items: Array<{
+    __typename: "Tag";
+    id: string;
+    sessionID: string;
+    name: string;
+  } | null> | null;
+  nextToken: string | null;
+};
+
+export type DataBySessionIdQuery = {
+  __typename: "ModelDataConnection";
+  items: Array<{
+    __typename: "Data";
+    id: string;
+    sessionID: string;
+    value: Array<number | null>;
+    time: string;
+  } | null> | null;
+  nextToken: string | null;
+};
+
+export type TagBySessionIdQuery = {
+  __typename: "ModelTagConnection";
+  items: Array<{
+    __typename: "Tag";
+    id: string;
+    sessionID: string;
+    name: string;
+  } | null> | null;
+  nextToken: string | null;
+};
+
+export type OnCreateSessionSubscription = {
+  __typename: "Session";
+  id: string;
   name: string;
   data: {
     __typename: "ModelDataConnection";
     nextToken: string | null;
   } | null;
+  tags: {
+    __typename: "ModelTagConnection";
+    nextToken: string | null;
+  } | null;
 };
 
-export type OnUpdateSensorSubscription = {
-  __typename: "Sensor";
+export type OnUpdateSessionSubscription = {
+  __typename: "Session";
   id: string;
-  type: SensorType;
   name: string;
   data: {
     __typename: "ModelDataConnection";
     nextToken: string | null;
   } | null;
+  tags: {
+    __typename: "ModelTagConnection";
+    nextToken: string | null;
+  } | null;
 };
 
-export type OnDeleteSensorSubscription = {
-  __typename: "Sensor";
+export type OnDeleteSessionSubscription = {
+  __typename: "Session";
   id: string;
-  type: SensorType;
   name: string;
   data: {
     __typename: "ModelDataConnection";
+    nextToken: string | null;
+  } | null;
+  tags: {
+    __typename: "ModelTagConnection";
     nextToken: string | null;
   } | null;
 };
@@ -305,111 +409,108 @@ export type OnDeleteSensorSubscription = {
 export type OnCreateDataSubscription = {
   __typename: "Data";
   id: string;
-  value: number;
+  sessionID: string;
+  value: Array<number | null>;
   time: string;
-  sensor: {
-    __typename: "Sensor";
-    id: string;
-    type: SensorType;
-    name: string;
-  };
 };
 
 export type OnUpdateDataSubscription = {
   __typename: "Data";
   id: string;
-  value: number;
+  sessionID: string;
+  value: Array<number | null>;
   time: string;
-  sensor: {
-    __typename: "Sensor";
-    id: string;
-    type: SensorType;
-    name: string;
-  };
 };
 
 export type OnDeleteDataSubscription = {
   __typename: "Data";
   id: string;
-  value: number;
+  sessionID: string;
+  value: Array<number | null>;
   time: string;
-  sensor: {
-    __typename: "Sensor";
-    id: string;
-    type: SensorType;
-    name: string;
-  };
+};
+
+export type OnCreateTagSubscription = {
+  __typename: "Tag";
+  id: string;
+  sessionID: string;
+  name: string;
+};
+
+export type OnUpdateTagSubscription = {
+  __typename: "Tag";
+  id: string;
+  sessionID: string;
+  name: string;
+};
+
+export type OnDeleteTagSubscription = {
+  __typename: "Tag";
+  id: string;
+  sessionID: string;
+  name: string;
 };
 
 @Injectable({
   providedIn: "root"
 })
 export class APIService {
-  async CreateSensor(
-    input: CreateSensorInput,
-    condition?: ModelSensorConditionInput
-  ): Promise<CreateSensorMutation> {
-    const statement = `mutation CreateSensor($input: CreateSensorInput!, $condition: ModelSensorConditionInput) {
-        createSensor(input: $input, condition: $condition) {
+  async BatchAddData(
+    data?: Array<CreateDataInput | null>
+  ): Promise<BatchAddDataMutation> {
+    const statement = `mutation BatchAddData($data: [CreateDataInput]) {
+        batchAddData(data: $data) {
           __typename
           id
-          type
-          name
-          data {
-            __typename
-            nextToken
-          }
+          sessionID
+          value
+          time
         }
       }`;
-    const gqlAPIServiceArguments: any = {
-      input
-    };
-    if (condition) {
-      gqlAPIServiceArguments.condition = condition;
+    const gqlAPIServiceArguments: any = {};
+    if (data) {
+      gqlAPIServiceArguments.data = data;
     }
     const response = (await API.graphql(
       graphqlOperation(statement, gqlAPIServiceArguments)
     )) as any;
-    return <CreateSensorMutation>response.data.createSensor;
+    return <BatchAddDataMutation>response.data.batchAddData;
   }
-  async UpdateSensor(
-    input: UpdateSensorInput,
-    condition?: ModelSensorConditionInput
-  ): Promise<UpdateSensorMutation> {
-    const statement = `mutation UpdateSensor($input: UpdateSensorInput!, $condition: ModelSensorConditionInput) {
-        updateSensor(input: $input, condition: $condition) {
+  async BatchDeleteData(
+    ids?: Array<string | null>
+  ): Promise<BatchDeleteDataMutation> {
+    const statement = `mutation BatchDeleteData($ids: [ID]) {
+        batchDeleteData(ids: $ids) {
           __typename
           id
-          type
-          name
-          data {
-            __typename
-            nextToken
-          }
+          sessionID
+          value
+          time
         }
       }`;
-    const gqlAPIServiceArguments: any = {
-      input
-    };
-    if (condition) {
-      gqlAPIServiceArguments.condition = condition;
+    const gqlAPIServiceArguments: any = {};
+    if (ids) {
+      gqlAPIServiceArguments.ids = ids;
     }
     const response = (await API.graphql(
       graphqlOperation(statement, gqlAPIServiceArguments)
     )) as any;
-    return <UpdateSensorMutation>response.data.updateSensor;
+    return <BatchDeleteDataMutation>response.data.batchDeleteData;
   }
-  async DeleteSensor(
-    input: DeleteSensorInput,
-    condition?: ModelSensorConditionInput
-  ): Promise<DeleteSensorMutation> {
-    const statement = `mutation DeleteSensor($input: DeleteSensorInput!, $condition: ModelSensorConditionInput) {
-        deleteSensor(input: $input, condition: $condition) {
+  async CreateSession(
+    input: CreateSessionInput,
+    condition?: ModelSessionConditionInput
+  ): Promise<CreateSessionMutation> {
+    const statement = `mutation CreateSession($input: CreateSessionInput!, $condition: ModelSessionConditionInput) {
+        createSession(input: $input, condition: $condition) {
           __typename
           id
-          type
           name
           data {
+            __typename
+            nextToken
+          }
+          tags {
             __typename
             nextToken
           }
@@ -424,7 +525,67 @@ export class APIService {
     const response = (await API.graphql(
       graphqlOperation(statement, gqlAPIServiceArguments)
     )) as any;
-    return <DeleteSensorMutation>response.data.deleteSensor;
+    return <CreateSessionMutation>response.data.createSession;
+  }
+  async UpdateSession(
+    input: UpdateSessionInput,
+    condition?: ModelSessionConditionInput
+  ): Promise<UpdateSessionMutation> {
+    const statement = `mutation UpdateSession($input: UpdateSessionInput!, $condition: ModelSessionConditionInput) {
+        updateSession(input: $input, condition: $condition) {
+          __typename
+          id
+          name
+          data {
+            __typename
+            nextToken
+          }
+          tags {
+            __typename
+            nextToken
+          }
+        }
+      }`;
+    const gqlAPIServiceArguments: any = {
+      input
+    };
+    if (condition) {
+      gqlAPIServiceArguments.condition = condition;
+    }
+    const response = (await API.graphql(
+      graphqlOperation(statement, gqlAPIServiceArguments)
+    )) as any;
+    return <UpdateSessionMutation>response.data.updateSession;
+  }
+  async DeleteSession(
+    input: DeleteSessionInput,
+    condition?: ModelSessionConditionInput
+  ): Promise<DeleteSessionMutation> {
+    const statement = `mutation DeleteSession($input: DeleteSessionInput!, $condition: ModelSessionConditionInput) {
+        deleteSession(input: $input, condition: $condition) {
+          __typename
+          id
+          name
+          data {
+            __typename
+            nextToken
+          }
+          tags {
+            __typename
+            nextToken
+          }
+        }
+      }`;
+    const gqlAPIServiceArguments: any = {
+      input
+    };
+    if (condition) {
+      gqlAPIServiceArguments.condition = condition;
+    }
+    const response = (await API.graphql(
+      graphqlOperation(statement, gqlAPIServiceArguments)
+    )) as any;
+    return <DeleteSessionMutation>response.data.deleteSession;
   }
   async CreateData(
     input: CreateDataInput,
@@ -434,14 +595,9 @@ export class APIService {
         createData(input: $input, condition: $condition) {
           __typename
           id
+          sessionID
           value
           time
-          sensor {
-            __typename
-            id
-            type
-            name
-          }
         }
       }`;
     const gqlAPIServiceArguments: any = {
@@ -463,14 +619,9 @@ export class APIService {
         updateData(input: $input, condition: $condition) {
           __typename
           id
+          sessionID
           value
           time
-          sensor {
-            __typename
-            id
-            type
-            name
-          }
         }
       }`;
     const gqlAPIServiceArguments: any = {
@@ -492,14 +643,9 @@ export class APIService {
         deleteData(input: $input, condition: $condition) {
           __typename
           id
+          sessionID
           value
           time
-          sensor {
-            __typename
-            id
-            type
-            name
-          }
         }
       }`;
     const gqlAPIServiceArguments: any = {
@@ -513,14 +659,86 @@ export class APIService {
     )) as any;
     return <DeleteDataMutation>response.data.deleteData;
   }
-  async GetSensor(id: string): Promise<GetSensorQuery> {
-    const statement = `query GetSensor($id: ID!) {
-        getSensor(id: $id) {
+  async CreateTag(
+    input: CreateTagInput,
+    condition?: ModelTagConditionInput
+  ): Promise<CreateTagMutation> {
+    const statement = `mutation CreateTag($input: CreateTagInput!, $condition: ModelTagConditionInput) {
+        createTag(input: $input, condition: $condition) {
           __typename
           id
-          type
+          sessionID
+          name
+        }
+      }`;
+    const gqlAPIServiceArguments: any = {
+      input
+    };
+    if (condition) {
+      gqlAPIServiceArguments.condition = condition;
+    }
+    const response = (await API.graphql(
+      graphqlOperation(statement, gqlAPIServiceArguments)
+    )) as any;
+    return <CreateTagMutation>response.data.createTag;
+  }
+  async UpdateTag(
+    input: UpdateTagInput,
+    condition?: ModelTagConditionInput
+  ): Promise<UpdateTagMutation> {
+    const statement = `mutation UpdateTag($input: UpdateTagInput!, $condition: ModelTagConditionInput) {
+        updateTag(input: $input, condition: $condition) {
+          __typename
+          id
+          sessionID
+          name
+        }
+      }`;
+    const gqlAPIServiceArguments: any = {
+      input
+    };
+    if (condition) {
+      gqlAPIServiceArguments.condition = condition;
+    }
+    const response = (await API.graphql(
+      graphqlOperation(statement, gqlAPIServiceArguments)
+    )) as any;
+    return <UpdateTagMutation>response.data.updateTag;
+  }
+  async DeleteTag(
+    input: DeleteTagInput,
+    condition?: ModelTagConditionInput
+  ): Promise<DeleteTagMutation> {
+    const statement = `mutation DeleteTag($input: DeleteTagInput!, $condition: ModelTagConditionInput) {
+        deleteTag(input: $input, condition: $condition) {
+          __typename
+          id
+          sessionID
+          name
+        }
+      }`;
+    const gqlAPIServiceArguments: any = {
+      input
+    };
+    if (condition) {
+      gqlAPIServiceArguments.condition = condition;
+    }
+    const response = (await API.graphql(
+      graphqlOperation(statement, gqlAPIServiceArguments)
+    )) as any;
+    return <DeleteTagMutation>response.data.deleteTag;
+  }
+  async GetSession(id: string): Promise<GetSessionQuery> {
+    const statement = `query GetSession($id: ID!) {
+        getSession(id: $id) {
+          __typename
+          id
           name
           data {
+            __typename
+            nextToken
+          }
+          tags {
             __typename
             nextToken
           }
@@ -532,20 +750,19 @@ export class APIService {
     const response = (await API.graphql(
       graphqlOperation(statement, gqlAPIServiceArguments)
     )) as any;
-    return <GetSensorQuery>response.data.getSensor;
+    return <GetSessionQuery>response.data.getSession;
   }
-  async ListSensors(
-    filter?: ModelSensorFilterInput,
+  async ListSessions(
+    filter?: ModelSessionFilterInput,
     limit?: number,
     nextToken?: string
-  ): Promise<ListSensorsQuery> {
-    const statement = `query ListSensors($filter: ModelSensorFilterInput, $limit: Int, $nextToken: String) {
-        listSensors(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  ): Promise<ListSessionsQuery> {
+    const statement = `query ListSessions($filter: ModelSessionFilterInput, $limit: Int, $nextToken: String) {
+        listSessions(filter: $filter, limit: $limit, nextToken: $nextToken) {
           __typename
           items {
             __typename
             id
-            type
             name
           }
           nextToken
@@ -564,21 +781,16 @@ export class APIService {
     const response = (await API.graphql(
       graphqlOperation(statement, gqlAPIServiceArguments)
     )) as any;
-    return <ListSensorsQuery>response.data.listSensors;
+    return <ListSessionsQuery>response.data.listSessions;
   }
   async GetData(id: string): Promise<GetDataQuery> {
     const statement = `query GetData($id: ID!) {
         getData(id: $id) {
           __typename
           id
+          sessionID
           value
           time
-          sensor {
-            __typename
-            id
-            type
-            name
-          }
         }
       }`;
     const gqlAPIServiceArguments: any = {
@@ -600,6 +812,7 @@ export class APIService {
           items {
             __typename
             id
+            sessionID
             value
             time
           }
@@ -621,56 +834,201 @@ export class APIService {
     )) as any;
     return <ListDatasQuery>response.data.listDatas;
   }
-  OnCreateSensorListener: Observable<OnCreateSensorSubscription> = API.graphql(
-    graphqlOperation(
-      `subscription OnCreateSensor {
-        onCreateSensor {
+  async GetTag(id: string): Promise<GetTagQuery> {
+    const statement = `query GetTag($id: ID!) {
+        getTag(id: $id) {
           __typename
           id
-          type
+          sessionID
+          name
+        }
+      }`;
+    const gqlAPIServiceArguments: any = {
+      id
+    };
+    const response = (await API.graphql(
+      graphqlOperation(statement, gqlAPIServiceArguments)
+    )) as any;
+    return <GetTagQuery>response.data.getTag;
+  }
+  async ListTags(
+    filter?: ModelTagFilterInput,
+    limit?: number,
+    nextToken?: string
+  ): Promise<ListTagsQuery> {
+    const statement = `query ListTags($filter: ModelTagFilterInput, $limit: Int, $nextToken: String) {
+        listTags(filter: $filter, limit: $limit, nextToken: $nextToken) {
+          __typename
+          items {
+            __typename
+            id
+            sessionID
+            name
+          }
+          nextToken
+        }
+      }`;
+    const gqlAPIServiceArguments: any = {};
+    if (filter) {
+      gqlAPIServiceArguments.filter = filter;
+    }
+    if (limit) {
+      gqlAPIServiceArguments.limit = limit;
+    }
+    if (nextToken) {
+      gqlAPIServiceArguments.nextToken = nextToken;
+    }
+    const response = (await API.graphql(
+      graphqlOperation(statement, gqlAPIServiceArguments)
+    )) as any;
+    return <ListTagsQuery>response.data.listTags;
+  }
+  async DataBySessionId(
+    sessionID?: string,
+    sortDirection?: ModelSortDirection,
+    filter?: ModelDataFilterInput,
+    limit?: number,
+    nextToken?: string
+  ): Promise<DataBySessionIdQuery> {
+    const statement = `query DataBySessionId($sessionID: ID, $sortDirection: ModelSortDirection, $filter: ModelDataFilterInput, $limit: Int, $nextToken: String) {
+        dataBySessionId(sessionID: $sessionID, sortDirection: $sortDirection, filter: $filter, limit: $limit, nextToken: $nextToken) {
+          __typename
+          items {
+            __typename
+            id
+            sessionID
+            value
+            time
+          }
+          nextToken
+        }
+      }`;
+    const gqlAPIServiceArguments: any = {};
+    if (sessionID) {
+      gqlAPIServiceArguments.sessionID = sessionID;
+    }
+    if (sortDirection) {
+      gqlAPIServiceArguments.sortDirection = sortDirection;
+    }
+    if (filter) {
+      gqlAPIServiceArguments.filter = filter;
+    }
+    if (limit) {
+      gqlAPIServiceArguments.limit = limit;
+    }
+    if (nextToken) {
+      gqlAPIServiceArguments.nextToken = nextToken;
+    }
+    const response = (await API.graphql(
+      graphqlOperation(statement, gqlAPIServiceArguments)
+    )) as any;
+    return <DataBySessionIdQuery>response.data.dataBySessionId;
+  }
+  async TagBySessionId(
+    sessionID?: string,
+    sortDirection?: ModelSortDirection,
+    filter?: ModelTagFilterInput,
+    limit?: number,
+    nextToken?: string
+  ): Promise<TagBySessionIdQuery> {
+    const statement = `query TagBySessionId($sessionID: ID, $sortDirection: ModelSortDirection, $filter: ModelTagFilterInput, $limit: Int, $nextToken: String) {
+        tagBySessionId(sessionID: $sessionID, sortDirection: $sortDirection, filter: $filter, limit: $limit, nextToken: $nextToken) {
+          __typename
+          items {
+            __typename
+            id
+            sessionID
+            name
+          }
+          nextToken
+        }
+      }`;
+    const gqlAPIServiceArguments: any = {};
+    if (sessionID) {
+      gqlAPIServiceArguments.sessionID = sessionID;
+    }
+    if (sortDirection) {
+      gqlAPIServiceArguments.sortDirection = sortDirection;
+    }
+    if (filter) {
+      gqlAPIServiceArguments.filter = filter;
+    }
+    if (limit) {
+      gqlAPIServiceArguments.limit = limit;
+    }
+    if (nextToken) {
+      gqlAPIServiceArguments.nextToken = nextToken;
+    }
+    const response = (await API.graphql(
+      graphqlOperation(statement, gqlAPIServiceArguments)
+    )) as any;
+    return <TagBySessionIdQuery>response.data.tagBySessionId;
+  }
+  OnCreateSessionListener: Observable<
+    OnCreateSessionSubscription
+  > = API.graphql(
+    graphqlOperation(
+      `subscription OnCreateSession {
+        onCreateSession {
+          __typename
+          id
           name
           data {
+            __typename
+            nextToken
+          }
+          tags {
             __typename
             nextToken
           }
         }
       }`
     )
-  ) as Observable<OnCreateSensorSubscription>;
+  ) as Observable<OnCreateSessionSubscription>;
 
-  OnUpdateSensorListener: Observable<OnUpdateSensorSubscription> = API.graphql(
+  OnUpdateSessionListener: Observable<
+    OnUpdateSessionSubscription
+  > = API.graphql(
     graphqlOperation(
-      `subscription OnUpdateSensor {
-        onUpdateSensor {
+      `subscription OnUpdateSession {
+        onUpdateSession {
           __typename
           id
-          type
           name
           data {
+            __typename
+            nextToken
+          }
+          tags {
             __typename
             nextToken
           }
         }
       }`
     )
-  ) as Observable<OnUpdateSensorSubscription>;
+  ) as Observable<OnUpdateSessionSubscription>;
 
-  OnDeleteSensorListener: Observable<OnDeleteSensorSubscription> = API.graphql(
+  OnDeleteSessionListener: Observable<
+    OnDeleteSessionSubscription
+  > = API.graphql(
     graphqlOperation(
-      `subscription OnDeleteSensor {
-        onDeleteSensor {
+      `subscription OnDeleteSession {
+        onDeleteSession {
           __typename
           id
-          type
           name
           data {
+            __typename
+            nextToken
+          }
+          tags {
             __typename
             nextToken
           }
         }
       }`
     )
-  ) as Observable<OnDeleteSensorSubscription>;
+  ) as Observable<OnDeleteSessionSubscription>;
 
   OnCreateDataListener: Observable<OnCreateDataSubscription> = API.graphql(
     graphqlOperation(
@@ -678,14 +1036,9 @@ export class APIService {
         onCreateData {
           __typename
           id
+          sessionID
           value
           time
-          sensor {
-            __typename
-            id
-            type
-            name
-          }
         }
       }`
     )
@@ -697,14 +1050,9 @@ export class APIService {
         onUpdateData {
           __typename
           id
+          sessionID
           value
           time
-          sensor {
-            __typename
-            id
-            type
-            name
-          }
         }
       }`
     )
@@ -716,16 +1064,50 @@ export class APIService {
         onDeleteData {
           __typename
           id
+          sessionID
           value
           time
-          sensor {
-            __typename
-            id
-            type
-            name
-          }
         }
       }`
     )
   ) as Observable<OnDeleteDataSubscription>;
+
+  OnCreateTagListener: Observable<OnCreateTagSubscription> = API.graphql(
+    graphqlOperation(
+      `subscription OnCreateTag {
+        onCreateTag {
+          __typename
+          id
+          sessionID
+          name
+        }
+      }`
+    )
+  ) as Observable<OnCreateTagSubscription>;
+
+  OnUpdateTagListener: Observable<OnUpdateTagSubscription> = API.graphql(
+    graphqlOperation(
+      `subscription OnUpdateTag {
+        onUpdateTag {
+          __typename
+          id
+          sessionID
+          name
+        }
+      }`
+    )
+  ) as Observable<OnUpdateTagSubscription>;
+
+  OnDeleteTagListener: Observable<OnDeleteTagSubscription> = API.graphql(
+    graphqlOperation(
+      `subscription OnDeleteTag {
+        onDeleteTag {
+          __typename
+          id
+          sessionID
+          name
+        }
+      }`
+    )
+  ) as Observable<OnDeleteTagSubscription>;
 }

@@ -2,6 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { BLE } from '@ionic-native/ble/ngx'
 import { NavController, ToastController } from '@ionic/angular';
 import { SensorReadingsService } from '../services/sensor-readings.service';
+import { DataManagementService } from './data-management.service';
 
 let not_connected = "Not Connected";
 
@@ -28,7 +29,8 @@ export class BleService {
     public navCtrl: NavController,
     private toastCtrl: ToastController,
     private ngZone: NgZone,
-    private sensorReadings: SensorReadingsService ) {
+    private sensorReadings: SensorReadingsService,
+    private dataManagement: DataManagementService ) {
 
   }
 
@@ -54,6 +56,9 @@ export class BleService {
         if( index > -1 ) {
           this.scannedDevices.splice( index, 1 );
         }
+        
+        // Start a new session for managing data
+        this.dataManagement.startNewSession();
 
         // Start Notifications for IMU
         this.startImuNotifications();
@@ -68,6 +73,9 @@ export class BleService {
 
   disconnect( device ) {
     this.ble.disconnect( device.id ).then( device => {
+      // Stop recording data, end the session
+      this.dataManagement.endSession();
+      
       console.log( device );
     });
 
@@ -105,8 +113,8 @@ export class BleService {
     var device = this.wearable;
     this.ble.startNotification( device.id, device.characteristics[7].service, device.characteristics[7].characteristic ).subscribe(
       buffer => {
-        var array = new Uint8Array(buffer);
-        this.sensorReadings.updateGyroData( array );
+        var array = new Uint16Array(buffer);
+        this.sensorReadings.updateIMUData( array );
     });
   }
 

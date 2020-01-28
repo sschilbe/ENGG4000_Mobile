@@ -61,7 +61,7 @@ export class ImuVisualizationService {
         4. StereoCamera			(Dual PerspectiveCameras - used for 3D effects such as parallax barrier)
     */
     visualization.camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-    visualization.camera.position.set( 0, -1, 0 );
+    visualization.camera.position.set( 0, -6, 0 );
 
     // Define an object to manage display of ThreeJS scene
     visualization.renderer = new THREE.WebGLRenderer();
@@ -89,7 +89,7 @@ export class ImuVisualizationService {
     visualization.scene.add( visualization.cylinder );
 
     // Define the depth position of the camera
-    visualization.camera.position.z = 30;
+    visualization.camera.position.z = 40;
   }
 
   /**
@@ -108,8 +108,8 @@ export class ImuVisualizationService {
     });
 
     // Define rotation speeds on x and y axes - lower values means lower speeds
-    visualization.cylinder.rotation.x += 0.15;
-    visualization.cylinder.rotation.y += 0.15;
+    visualization.cylinder.rotation.x += 0.05;
+    visualization.cylinder.rotation.y += 0.05;
 
     // Render the scene (will be called using the requestAnimationFrame method to ensure the cube is constantly animated)
     visualization.renderer.render( visualization.scene, visualization.camera );
