@@ -20,17 +20,11 @@
 
   <div>
     <ion-card [hidden]="segment != 'force'">
-      <ion-card-header>
-        Force Data
-      </ion-card-header>
-      <div id="forceChartLive" style="width:100%; height:480px;"></div>
+      <div id="forceChartLive" style="width:100%; height:520px;"></div>
     </ion-card>
   
     <ion-card [hidden]="segment != 'imu'">
-      <ion-card-header>
-        IMU Data
-      </ion-card-header>
-      <div #imuVisualizationLive style="width:100%; height:480px;"></div>
+      <div #imuVisualizationLive style="width:100%; height:520px;"></div>
     </ion-card>
   </div>
 </ion-content>

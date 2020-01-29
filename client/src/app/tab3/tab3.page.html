@@ -12,6 +12,9 @@
 
 <ion-content>
   <ion-card>
+    <ion-card-header>
+      <ion-card-title>Wearable</ion-card-title>
+    </ion-card-header>
     <ion-card-content>
       {{ble.wearable.name}}
       <ion-button *ngIf="ble.wearable.name != 'Not Connected'" (click)="ble.disconnect( ble.wearable )" class="ion-float-right" center>
@@ -21,6 +24,9 @@
   </ion-card>
   
   <ion-card>
+    <ion-card-header>
+      <ion-card-title>Human Machine Interface</ion-card-title>
+    </ion-card-header>
     <ion-card-content >
       {{ble.hmi.name}}
       <ion-button *ngIf="ble.hmi.name != 'Not Connected'" (click)="ble.disconnect( ble.hmi )" class="ion-float-right" center>
@@ -30,11 +36,13 @@
   </ion-card>
 
   <ion-list>
-    <ion-card-content ion-item *ngFor="let device of ble.scannedDevices">
-      {{device.name}} - {{device.id}}
-      <ion-button class="ion-float-right" (click)="ble.connect(device)">
-        Connect
-      </ion-button>
-    </ion-card-content>
+    <ion-card ion-item *ngFor="let device of ble.scannedDevices">
+      <ion-card-content>
+        {{device.name}} - {{device.id}}
+        <ion-button class="ion-float-right" (click)="ble.connect(device)">
+          Connect
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
   </ion-list>
 </ion-content>
