@@ -12,11 +12,13 @@ export class DataManagementService {
   currentSession: Session = null;
   sessionData: Array<CreateDataInput> = new Array();
 
-  forceData: Array<number> = null;
-  imuData: Array<number> = null;
+  data: Array<number> = null;
+  dataSubscription;
 
-  forceSubscription;
-  imuSubscription;
+  // Debugging information
+  start: Date = null ;
+  end: Date = null;
+  numberOfNotifications = 0;
 
   constructor(private apiService: APIService,
               private sensorReadings: SensorReadingsService) { 
@@ -34,40 +36,20 @@ export class DataManagementService {
     }).then( (session) => {
       this.currentSession = new Session( session );
       // Subscribe to the notifications from the BLE module
-      this.forceSubscription = this.sensorReadings.forceData.subscribe( (data) => {
-        this.forceData = data;
+      this.start = new Date(); // Debug
+      this.dataSubscription = this.sensorReadings.data.subscribe( (data) => {
+        
+        this.numberOfNotifications++; // Debug
 
-        if( this.imuData != null ) {
-          // Add this data to the current data for the session
-          var tempData = this.forceData.concat( this.imuData );
-          this.sessionData.push({
-            values: tempData,
-            time: moment().toISOString(),
-            dataSessionId: this.currentSession.id
-          })
+        this.sessionData.push({
+          values: data,
+          time: moment().toISOString(),
+          dataSessionId: this.currentSession.id
+        });
 
-          this.imuData = null;
-          this.forceData = null;
-        }
+        this.data = null;
       });
 
-      this.imuSubscription = this.sensorReadings.imuData.subscribe( (data) => {
-        this.imuData = data;
-
-        if( this.forceData != null ) {
-          // Add this data to the current data for the session
-          var tempData = this.forceData.concat( this.imuData );
-          this.sessionData.push({
-            values: tempData,
-            time: moment().toISOString(),
-            dataSessionId: this.currentSession.id
-          })
-
-          this.imuData = null;
-          this.forceData = null;
-        }
-      });
-      
       console.log( this.currentSession );
     },
     (reason) => console.error( reason ) );
@@ -75,13 +57,15 @@ export class DataManagementService {
 
 
   endSession() {
+    this.end = new Date(); // Debug
+    console.log( "Notifications per second: " + ( this.numberOfNotifications / ( (this.end.valueOf() - this.start.valueOf() ) / 1000 ) ) );
+
     // Guard against current session not being set
     if( this.currentSession == null ) {
       return;
     }
 
-    this.forceSubscription.unsubscribe();
-    this.imuSubscription.unsubscribe();
+    this.dataSubscription.unsubscribe();
 
     console.log( this.sessionData );
     /*this.apiService.BatchAddData( this.sessionData ).then( data => {

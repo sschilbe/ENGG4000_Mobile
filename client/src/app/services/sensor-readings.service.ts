@@ -5,19 +5,12 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class SensorReadingsService {
-  private forceDataSource = new BehaviorSubject<any>([]);
-  forceData = this.forceDataSource.asObservable();
-
-  private imuDataSource = new BehaviorSubject<any>([]);
-  imuData = this.imuDataSource.asObservable();
+  private dataSource = new BehaviorSubject<any>([]);
+  data = this.dataSource.asObservable();
 
   constructor() {}
 
-  updateForceData( data : Uint16Array ) {
-    this.forceDataSource.next( Array.from( data ) );
-  }
-
-  updateIMUData( data : Uint16Array ) {
-    this.imuDataSource.next( Array.from( data ) );
+  updateData( data : Uint16Array ) {
+    this.dataSource.next( Array.from( data ) );
   }
 }

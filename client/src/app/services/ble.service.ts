@@ -52,6 +52,13 @@ export class BleService {
         this.wearable = peripheralData;
         console.log( peripheralData );
 
+        // Request a larger MTU size to facilitate long characteristics
+        this.ble.requestMtu(this.wearable.id, 40).then(() => {
+          console.log("Accepted MTU size change");
+        }, error => {
+          console.log("Rejected MTU size change");
+        });
+
         var index = this.scannedDevices.indexOf( device );
         if( index > -1 ) {
           this.scannedDevices.splice( index, 1 );
@@ -60,11 +67,8 @@ export class BleService {
         // Start a new session for managing data
         this.dataManagement.startNewSession();
 
-        // Start Notifications for IMU
-        this.startImuNotifications();
-
         // Start Notifications for Force Sensor
-        this.startForceNotifications();
+        this.startDataNotifications();
       },
     
       error => { console.log('disconnected'); console.log( error ); }
@@ -100,21 +104,13 @@ export class BleService {
     toast.present();
   }
 
-  startForceNotifications() {
-    var device = this.wearable;
-    this.ble.startNotification( device.id, device.characteristics[8].service, device.characteristics[8].characteristic ).subscribe(
-      buffer => {
-        var array = new Uint16Array(buffer);
-        this.sensorReadings.updateForceData( array );
-    });
-  }
-
-  startImuNotifications() {
+  startDataNotifications() {
     var device = this.wearable;
     this.ble.startNotification( device.id, device.characteristics[7].service, device.characteristics[7].characteristic ).subscribe(
       buffer => {
+        console.log(buffer);
         var array = new Uint16Array(buffer);
-        this.sensorReadings.updateIMUData( array );
+        this.sensorReadings.updateData( array );
     });
   }
 

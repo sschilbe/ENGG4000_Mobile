@@ -54,7 +54,7 @@ export class ChartService {
   
         series: [{
           type: 'heatmap',
-          name: undefined,
+          name: 'Force Data',
           borderWidth: 1,
           data: [],
           dataLabels: {
@@ -89,7 +89,7 @@ export class ChartService {
             [0.5, '#fffbbc'],
             [0.9, '#c4463a']
           ],
-          max: 4095
+          softMax: 4095
         },
   
         legend: {
@@ -121,7 +121,7 @@ export class ChartService {
   
         series: [{
           type: 'heatmap',
-          name: undefined,
+          name: 'Force Data',
           borderWidth: 1,
           data: [],
           dataLabels: {

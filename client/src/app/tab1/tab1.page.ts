@@ -31,8 +31,8 @@ export class Tab1Page implements OnInit {
   }
 
   ngOnInit() {
-    this.sensorReadings.forceData.subscribe( data => {
-      this.chartService.formatData( this.chart, data );
+    this.sensorReadings.data.subscribe( data => {
+      this.chartService.formatData( this.chart, data.slice(8) );
     });
 
     this.imuVisualizer.setCanvasElement( this.imuVisualization, this.imuVisualizationRef );
