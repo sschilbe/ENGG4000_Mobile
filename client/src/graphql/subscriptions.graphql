@@ -4,9 +4,20 @@ subscription OnCreateSession {
     id
     name
     data {
+      items {
+        id
+        sessionId
+        values
+        time
+      }
       nextToken
     }
     tags {
+      items {
+        id
+        sessionId
+        name
+      }
       nextToken
     }
   }
@@ -16,9 +27,20 @@ subscription OnUpdateSession {
     id
     name
     data {
+      items {
+        id
+        sessionId
+        values
+        time
+      }
       nextToken
     }
     tags {
+      items {
+        id
+        sessionId
+        name
+      }
       nextToken
     }
   }
@@ -28,9 +50,20 @@ subscription OnDeleteSession {
     id
     name
     data {
+      items {
+        id
+        sessionId
+        values
+        time
+      }
       nextToken
     }
     tags {
+      items {
+        id
+        sessionId
+        name
+      }
       nextToken
     }
   }
@@ -38,45 +71,45 @@ subscription OnDeleteSession {
 subscription OnCreateData {
   onCreateData {
     id
-    sessionID
-    value
+    sessionId
+    values
     time
   }
 }
 subscription OnUpdateData {
   onUpdateData {
     id
-    sessionID
-    value
+    sessionId
+    values
     time
   }
 }
 subscription OnDeleteData {
   onDeleteData {
     id
-    sessionID
-    value
+    sessionId
+    values
     time
   }
 }
 subscription OnCreateTag {
   onCreateTag {
     id
-    sessionID
+    sessionId
     name
   }
 }
 subscription OnUpdateTag {
   onUpdateTag {
     id
-    sessionID
+    sessionId
     name
   }
 }
 subscription OnDeleteTag {
   onDeleteTag {
     id
-    sessionID
+    sessionId
     name
   }
 }

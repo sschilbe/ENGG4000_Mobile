@@ -1,16 +1,16 @@
 type Session @model {
   id: ID!
   name: String!
-  data: [Data] @connection(keyName: "bySession", fields: ["id"], name: "SessionData")
-  tags: [Tag] @connection(keyName: "bySession", fields: ["id"], name: "SessionTag")
+  data: [Data] @connection(keyName: "bySession", fields: ["id"])
+  tags: [Tag] @connection(keyName: "bySession", fields: ["id"])
 }
 
 type Data @model 
-  @key(name: "bySession", fields: ["sessionID"], queryField: "dataBySessionId")
+  @key(name: "bySession", fields: ["sessionId"], queryField: "dataBySessionId")
 {  
   id: ID!
-  sessionID: ID!
-  value: [Int]!
+  sessionId: ID!
+  values: [Int]!
   time: AWSDateTime!
 }
 
@@ -18,14 +18,14 @@ input CreateDataInput {
   id: ID
   values: [Int]!
   time: AWSDateTime!
-  dataSessionId: ID!
+  sessionId: ID!
 }
 
 type Tag @model
-  @key(name: "bySession", fields: ["sessionID"], queryField: "tagBySessionId")
+  @key(name: "bySession", fields: ["sessionId"], queryField: "tagBySessionId")
 {
   id: ID!
-  sessionID: ID!
+  sessionId: ID!
   name: String!
 }
 

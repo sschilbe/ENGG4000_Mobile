@@ -204,7 +204,7 @@
           "name" : "dataBySessionId",
           "description" : null,
           "args" : [ {
-            "name" : "sessionID",
+            "name" : "sessionId",
             "description" : null,
             "type" : {
               "kind" : "SCALAR",
@@ -260,7 +260,7 @@
           "name" : "tagBySessionId",
           "description" : null,
           "args" : [ {
-            "name" : "sessionID",
+            "name" : "sessionId",
             "description" : null,
             "type" : {
               "kind" : "SCALAR",
@@ -523,7 +523,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "sessionID",
+          "name" : "sessionId",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -538,7 +538,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "value",
+          "name" : "values",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -609,7 +609,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "sessionID",
+          "name" : "sessionId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -618,7 +618,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "value",
+          "name" : "values",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -1246,7 +1246,7 @@
           "isDeprecated" : false,
           "deprecationReason" : null
         }, {
-          "name" : "sessionID",
+          "name" : "sessionId",
           "description" : null,
           "args" : [ ],
           "type" : {
@@ -1295,7 +1295,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "sessionID",
+          "name" : "sessionId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -1855,7 +1855,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "dataSessionId",
+          "name" : "sessionId",
           "description" : null,
           "type" : {
             "kind" : "NON_NULL",
@@ -2010,7 +2010,7 @@
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
-          "name" : "sessionID",
+          "name" : "sessionId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -2019,7 +2019,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "value",
+          "name" : "values",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -2094,7 +2094,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "sessionID",
+          "name" : "sessionId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -2103,7 +2103,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "value",
+          "name" : "values",
           "description" : null,
           "type" : {
             "kind" : "LIST",
@@ -2161,7 +2161,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "sessionID",
+          "name" : "sessionId",
           "description" : null,
           "type" : {
             "kind" : "NON_NULL",
@@ -2196,7 +2196,7 @@
         "description" : null,
         "fields" : null,
         "inputFields" : [ {
-          "name" : "sessionID",
+          "name" : "sessionId",
           "description" : null,
           "type" : {
             "kind" : "INPUT_OBJECT",
@@ -2271,7 +2271,7 @@
           },
           "defaultValue" : null
         }, {
-          "name" : "sessionID",
+          "name" : "sessionId",
           "description" : null,
           "type" : {
             "kind" : "SCALAR",
@@ -3371,14 +3371,6 @@
         "onFragment" : false,
         "onField" : false
       }, {
-        "name" : "aws_api_key",
-        "description" : "Tells the service this field/object has access authorized by an API key.",
-        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
-        "args" : [ ],
-        "onOperation" : false,
-        "onFragment" : false,
-        "onField" : false
-      }, {
         "name" : "deprecated",
         "description" : null,
         "locations" : [ "FIELD_DEFINITION", "ENUM_VALUE" ],
@@ -3392,6 +3384,14 @@
           },
           "defaultValue" : "\"No longer supported\""
         } ],
+        "onOperation" : false,
+        "onFragment" : false,
+        "onField" : false
+      }, {
+        "name" : "aws_api_key",
+        "description" : "Tells the service this field/object has access authorized by an API key.",
+        "locations" : [ "OBJECT", "FIELD_DEFINITION" ],
+        "args" : [ ],
         "onOperation" : false,
         "onFragment" : false,
         "onField" : false

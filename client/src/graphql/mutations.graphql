@@ -2,16 +2,16 @@
 mutation BatchAddData($data: [CreateDataInput]) {
   batchAddData(data: $data) {
     id
-    sessionID
-    value
+    sessionId
+    values
     time
   }
 }
 mutation BatchDeleteData($ids: [ID]) {
   batchDeleteData(ids: $ids) {
     id
-    sessionID
-    value
+    sessionId
+    values
     time
   }
 }
@@ -23,9 +23,20 @@ mutation CreateSession(
     id
     name
     data {
+      items {
+        id
+        sessionId
+        values
+        time
+      }
       nextToken
     }
     tags {
+      items {
+        id
+        sessionId
+        name
+      }
       nextToken
     }
   }
@@ -38,9 +49,20 @@ mutation UpdateSession(
     id
     name
     data {
+      items {
+        id
+        sessionId
+        values
+        time
+      }
       nextToken
     }
     tags {
+      items {
+        id
+        sessionId
+        name
+      }
       nextToken
     }
   }
@@ -53,9 +75,20 @@ mutation DeleteSession(
     id
     name
     data {
+      items {
+        id
+        sessionId
+        values
+        time
+      }
       nextToken
     }
     tags {
+      items {
+        id
+        sessionId
+        name
+      }
       nextToken
     }
   }
@@ -66,8 +99,8 @@ mutation CreateData(
 ) {
   createData(input: $input, condition: $condition) {
     id
-    sessionID
-    value
+    sessionId
+    values
     time
   }
 }
@@ -77,8 +110,8 @@ mutation UpdateData(
 ) {
   updateData(input: $input, condition: $condition) {
     id
-    sessionID
-    value
+    sessionId
+    values
     time
   }
 }
@@ -88,8 +121,8 @@ mutation DeleteData(
 ) {
   deleteData(input: $input, condition: $condition) {
     id
-    sessionID
-    value
+    sessionId
+    values
     time
   }
 }
@@ -99,7 +132,7 @@ mutation CreateTag(
 ) {
   createTag(input: $input, condition: $condition) {
     id
-    sessionID
+    sessionId
     name
   }
 }
@@ -109,7 +142,7 @@ mutation UpdateTag(
 ) {
   updateTag(input: $input, condition: $condition) {
     id
-    sessionID
+    sessionId
     name
   }
 }
@@ -119,7 +152,7 @@ mutation DeleteTag(
 ) {
   deleteTag(input: $input, condition: $condition) {
     id
-    sessionID
+    sessionId
     name
   }
 }

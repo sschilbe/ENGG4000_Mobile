@@ -9,7 +9,7 @@ export type CreateDataInput = {
   id?: string | null;
   values: Array<number | null>;
   time: string;
-  sessionID: string;
+  sessionId: string;
 };
 
 export type CreateSessionInput = {
@@ -73,7 +73,7 @@ export type DeleteSessionInput = {
 };
 
 export type ModelDataConditionInput = {
-  sessionID?: ModelIDInput | null;
+  sessionId?: ModelIDInput | null;
   values?: ModelIntInput | null;
   time?: ModelStringInput | null;
   and?: Array<ModelDataConditionInput | null> | null;
@@ -111,7 +111,7 @@ export type ModelIntInput = {
 
 export type UpdateDataInput = {
   id: string;
-  sessionID?: string | null;
+  sessionId?: string | null;
   values?: Array<number | null> | null;
   time?: string | null;
 };
@@ -122,12 +122,12 @@ export type DeleteDataInput = {
 
 export type CreateTagInput = {
   id?: string | null;
-  sessionID: string;
+  sessionId: string;
   name: string;
 };
 
 export type ModelTagConditionInput = {
-  sessionID?: ModelIDInput | null;
+  sessionId?: ModelIDInput | null;
   name?: ModelStringInput | null;
   and?: Array<ModelTagConditionInput | null> | null;
   or?: Array<ModelTagConditionInput | null> | null;
@@ -136,7 +136,7 @@ export type ModelTagConditionInput = {
 
 export type UpdateTagInput = {
   id: string;
-  sessionID?: string | null;
+  sessionId?: string | null;
   name?: string | null;
 };
 
@@ -154,7 +154,7 @@ export type ModelSessionFilterInput = {
 
 export type ModelDataFilterInput = {
   id?: ModelIDInput | null;
-  sessionID?: ModelIDInput | null;
+  sessionId?: ModelIDInput | null;
   values?: ModelIntInput | null;
   time?: ModelStringInput | null;
   and?: Array<ModelDataFilterInput | null> | null;
@@ -164,7 +164,7 @@ export type ModelDataFilterInput = {
 
 export type ModelTagFilterInput = {
   id?: ModelIDInput | null;
-  sessionID?: ModelIDInput | null;
+  sessionId?: ModelIDInput | null;
   name?: ModelStringInput | null;
   and?: Array<ModelTagFilterInput | null> | null;
   or?: Array<ModelTagFilterInput | null> | null;
@@ -179,7 +179,7 @@ export enum ModelSortDirection {
 export type BatchAddDataMutation = {
   __typename: "Data";
   id: string;
-  sessionID: string;
+  sessionId: string;
   values: Array<number | null>;
   time: string;
 };
@@ -187,7 +187,7 @@ export type BatchAddDataMutation = {
 export type BatchDeleteDataMutation = {
   __typename: "Data";
   id: string;
-  sessionID: string;
+  sessionId: string;
   values: Array<number | null>;
   time: string;
 };
@@ -198,10 +198,23 @@ export type CreateSessionMutation = {
   name: string;
   data: {
     __typename: "ModelDataConnection";
+    items: Array<{
+      __typename: "Data";
+      id: string;
+      sessionId: string;
+      values: Array<number | null>;
+      time: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
   tags: {
     __typename: "ModelTagConnection";
+    items: Array<{
+      __typename: "Tag";
+      id: string;
+      sessionId: string;
+      name: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
 };
@@ -212,10 +225,23 @@ export type UpdateSessionMutation = {
   name: string;
   data: {
     __typename: "ModelDataConnection";
+    items: Array<{
+      __typename: "Data";
+      id: string;
+      sessionId: string;
+      values: Array<number | null>;
+      time: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
   tags: {
     __typename: "ModelTagConnection";
+    items: Array<{
+      __typename: "Tag";
+      id: string;
+      sessionId: string;
+      name: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
 };
@@ -226,10 +252,23 @@ export type DeleteSessionMutation = {
   name: string;
   data: {
     __typename: "ModelDataConnection";
+    items: Array<{
+      __typename: "Data";
+      id: string;
+      sessionId: string;
+      values: Array<number | null>;
+      time: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
   tags: {
     __typename: "ModelTagConnection";
+    items: Array<{
+      __typename: "Tag";
+      id: string;
+      sessionId: string;
+      name: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
 };
@@ -237,7 +276,7 @@ export type DeleteSessionMutation = {
 export type CreateDataMutation = {
   __typename: "Data";
   id: string;
-  sessionID: string;
+  sessionId: string;
   values: Array<number | null>;
   time: string;
 };
@@ -245,7 +284,7 @@ export type CreateDataMutation = {
 export type UpdateDataMutation = {
   __typename: "Data";
   id: string;
-  sessionID: string;
+  sessionId: string;
   values: Array<number | null>;
   time: string;
 };
@@ -253,7 +292,7 @@ export type UpdateDataMutation = {
 export type DeleteDataMutation = {
   __typename: "Data";
   id: string;
-  sessionID: string;
+  sessionId: string;
   values: Array<number | null>;
   time: string;
 };
@@ -261,21 +300,21 @@ export type DeleteDataMutation = {
 export type CreateTagMutation = {
   __typename: "Tag";
   id: string;
-  sessionID: string;
+  sessionId: string;
   name: string;
 };
 
 export type UpdateTagMutation = {
   __typename: "Tag";
   id: string;
-  sessionID: string;
+  sessionId: string;
   name: string;
 };
 
 export type DeleteTagMutation = {
   __typename: "Tag";
   id: string;
-  sessionID: string;
+  sessionId: string;
   name: string;
 };
 
@@ -285,10 +324,23 @@ export type GetSessionQuery = {
   name: string;
   data: {
     __typename: "ModelDataConnection";
+    items: Array<{
+      __typename: "Data";
+      id: string;
+      sessionId: string;
+      values: Array<number | null>;
+      time: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
   tags: {
     __typename: "ModelTagConnection";
+    items: Array<{
+      __typename: "Tag";
+      id: string;
+      sessionId: string;
+      name: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
 };
@@ -299,6 +351,14 @@ export type ListSessionsQuery = {
     __typename: "Session";
     id: string;
     name: string;
+    data: {
+      __typename: "ModelDataConnection";
+      nextToken: string | null;
+    } | null;
+    tags: {
+      __typename: "ModelTagConnection";
+      nextToken: string | null;
+    } | null;
   } | null> | null;
   nextToken: string | null;
 };
@@ -306,7 +366,7 @@ export type ListSessionsQuery = {
 export type GetDataQuery = {
   __typename: "Data";
   id: string;
-  sessionID: string;
+  sessionId: string;
   values: Array<number | null>;
   time: string;
 };
@@ -316,7 +376,7 @@ export type ListDatasQuery = {
   items: Array<{
     __typename: "Data";
     id: string;
-    sessionID: string;
+    sessionId: string;
     values: Array<number | null>;
     time: string;
   } | null> | null;
@@ -326,7 +386,7 @@ export type ListDatasQuery = {
 export type GetTagQuery = {
   __typename: "Tag";
   id: string;
-  sessionID: string;
+  sessionId: string;
   name: string;
 };
 
@@ -335,7 +395,7 @@ export type ListTagsQuery = {
   items: Array<{
     __typename: "Tag";
     id: string;
-    sessionID: string;
+    sessionId: string;
     name: string;
   } | null> | null;
   nextToken: string | null;
@@ -346,7 +406,7 @@ export type DataBySessionIdQuery = {
   items: Array<{
     __typename: "Data";
     id: string;
-    sessionID: string;
+    sessionId: string;
     values: Array<number | null>;
     time: string;
   } | null> | null;
@@ -358,7 +418,7 @@ export type TagBySessionIdQuery = {
   items: Array<{
     __typename: "Tag";
     id: string;
-    sessionID: string;
+    sessionId: string;
     name: string;
   } | null> | null;
   nextToken: string | null;
@@ -370,10 +430,23 @@ export type OnCreateSessionSubscription = {
   name: string;
   data: {
     __typename: "ModelDataConnection";
+    items: Array<{
+      __typename: "Data";
+      id: string;
+      sessionId: string;
+      values: Array<number | null>;
+      time: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
   tags: {
     __typename: "ModelTagConnection";
+    items: Array<{
+      __typename: "Tag";
+      id: string;
+      sessionId: string;
+      name: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
 };
@@ -384,10 +457,23 @@ export type OnUpdateSessionSubscription = {
   name: string;
   data: {
     __typename: "ModelDataConnection";
+    items: Array<{
+      __typename: "Data";
+      id: string;
+      sessionId: string;
+      values: Array<number | null>;
+      time: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
   tags: {
     __typename: "ModelTagConnection";
+    items: Array<{
+      __typename: "Tag";
+      id: string;
+      sessionId: string;
+      name: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
 };
@@ -398,10 +484,23 @@ export type OnDeleteSessionSubscription = {
   name: string;
   data: {
     __typename: "ModelDataConnection";
+    items: Array<{
+      __typename: "Data";
+      id: string;
+      sessionId: string;
+      values: Array<number | null>;
+      time: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
   tags: {
     __typename: "ModelTagConnection";
+    items: Array<{
+      __typename: "Tag";
+      id: string;
+      sessionId: string;
+      name: string;
+    } | null> | null;
     nextToken: string | null;
   } | null;
 };
@@ -409,7 +508,7 @@ export type OnDeleteSessionSubscription = {
 export type OnCreateDataSubscription = {
   __typename: "Data";
   id: string;
-  sessionID: string;
+  sessionId: string;
   values: Array<number | null>;
   time: string;
 };
@@ -417,7 +516,7 @@ export type OnCreateDataSubscription = {
 export type OnUpdateDataSubscription = {
   __typename: "Data";
   id: string;
-  sessionID: string;
+  sessionId: string;
   values: Array<number | null>;
   time: string;
 };
@@ -425,7 +524,7 @@ export type OnUpdateDataSubscription = {
 export type OnDeleteDataSubscription = {
   __typename: "Data";
   id: string;
-  sessionID: string;
+  sessionId: string;
   values: Array<number | null>;
   time: string;
 };
@@ -433,21 +532,21 @@ export type OnDeleteDataSubscription = {
 export type OnCreateTagSubscription = {
   __typename: "Tag";
   id: string;
-  sessionID: string;
+  sessionId: string;
   name: string;
 };
 
 export type OnUpdateTagSubscription = {
   __typename: "Tag";
   id: string;
-  sessionID: string;
+  sessionId: string;
   name: string;
 };
 
 export type OnDeleteTagSubscription = {
   __typename: "Tag";
   id: string;
-  sessionID: string;
+  sessionId: string;
   name: string;
 };
 
@@ -462,7 +561,7 @@ export class APIService {
         batchAddData(data: $data) {
           __typename
           id
-          sessionID
+          sessionId
           values
           time
         }
@@ -483,7 +582,7 @@ export class APIService {
         batchDeleteData(ids: $ids) {
           __typename
           id
-          sessionID
+          sessionId
           values
           time
         }
@@ -508,10 +607,23 @@ export class APIService {
           name
           data {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              values
+              time
+            }
             nextToken
           }
           tags {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              name
+            }
             nextToken
           }
         }
@@ -538,10 +650,23 @@ export class APIService {
           name
           data {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              values
+              time
+            }
             nextToken
           }
           tags {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              name
+            }
             nextToken
           }
         }
@@ -568,10 +693,23 @@ export class APIService {
           name
           data {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              values
+              time
+            }
             nextToken
           }
           tags {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              name
+            }
             nextToken
           }
         }
@@ -595,7 +733,7 @@ export class APIService {
         createData(input: $input, condition: $condition) {
           __typename
           id
-          sessionID
+          sessionId
           values
           time
         }
@@ -619,7 +757,7 @@ export class APIService {
         updateData(input: $input, condition: $condition) {
           __typename
           id
-          sessionID
+          sessionId
           values
           time
         }
@@ -643,7 +781,7 @@ export class APIService {
         deleteData(input: $input, condition: $condition) {
           __typename
           id
-          sessionID
+          sessionId
           values
           time
         }
@@ -667,7 +805,7 @@ export class APIService {
         createTag(input: $input, condition: $condition) {
           __typename
           id
-          sessionID
+          sessionId
           name
         }
       }`;
@@ -690,7 +828,7 @@ export class APIService {
         updateTag(input: $input, condition: $condition) {
           __typename
           id
-          sessionID
+          sessionId
           name
         }
       }`;
@@ -713,7 +851,7 @@ export class APIService {
         deleteTag(input: $input, condition: $condition) {
           __typename
           id
-          sessionID
+          sessionId
           name
         }
       }`;
@@ -736,10 +874,23 @@ export class APIService {
           name
           data {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              values
+              time
+            }
             nextToken
           }
           tags {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              name
+            }
             nextToken
           }
         }
@@ -764,6 +915,14 @@ export class APIService {
             __typename
             id
             name
+            data {
+              __typename
+              nextToken
+            }
+            tags {
+              __typename
+              nextToken
+            }
           }
           nextToken
         }
@@ -788,7 +947,7 @@ export class APIService {
         getData(id: $id) {
           __typename
           id
-          sessionID
+          sessionId
           values
           time
         }
@@ -812,7 +971,7 @@ export class APIService {
           items {
             __typename
             id
-            sessionID
+            sessionId
             values
             time
           }
@@ -839,7 +998,7 @@ export class APIService {
         getTag(id: $id) {
           __typename
           id
-          sessionID
+          sessionId
           name
         }
       }`;
@@ -862,7 +1021,7 @@ export class APIService {
           items {
             __typename
             id
-            sessionID
+            sessionId
             name
           }
           nextToken
@@ -884,19 +1043,19 @@ export class APIService {
     return <ListTagsQuery>response.data.listTags;
   }
   async DataBySessionId(
-    sessionID?: string,
+    sessionId?: string,
     sortDirection?: ModelSortDirection,
     filter?: ModelDataFilterInput,
     limit?: number,
     nextToken?: string
   ): Promise<DataBySessionIdQuery> {
-    const statement = `query DataBySessionId($sessionID: ID, $sortDirection: ModelSortDirection, $filter: ModelDataFilterInput, $limit: Int, $nextToken: String) {
-        dataBySessionId(sessionID: $sessionID, sortDirection: $sortDirection, filter: $filter, limit: $limit, nextToken: $nextToken) {
+    const statement = `query DataBySessionId($sessionId: ID, $sortDirection: ModelSortDirection, $filter: ModelDataFilterInput, $limit: Int, $nextToken: String) {
+        dataBySessionId(sessionId: $sessionId, sortDirection: $sortDirection, filter: $filter, limit: $limit, nextToken: $nextToken) {
           __typename
           items {
             __typename
             id
-            sessionID
+            sessionId
             values
             time
           }
@@ -904,8 +1063,8 @@ export class APIService {
         }
       }`;
     const gqlAPIServiceArguments: any = {};
-    if (sessionID) {
-      gqlAPIServiceArguments.sessionID = sessionID;
+    if (sessionId) {
+      gqlAPIServiceArguments.sessionId = sessionId;
     }
     if (sortDirection) {
       gqlAPIServiceArguments.sortDirection = sortDirection;
@@ -925,27 +1084,27 @@ export class APIService {
     return <DataBySessionIdQuery>response.data.dataBySessionId;
   }
   async TagBySessionId(
-    sessionID?: string,
+    sessionId?: string,
     sortDirection?: ModelSortDirection,
     filter?: ModelTagFilterInput,
     limit?: number,
     nextToken?: string
   ): Promise<TagBySessionIdQuery> {
-    const statement = `query TagBySessionId($sessionID: ID, $sortDirection: ModelSortDirection, $filter: ModelTagFilterInput, $limit: Int, $nextToken: String) {
-        tagBySessionId(sessionID: $sessionID, sortDirection: $sortDirection, filter: $filter, limit: $limit, nextToken: $nextToken) {
+    const statement = `query TagBySessionId($sessionId: ID, $sortDirection: ModelSortDirection, $filter: ModelTagFilterInput, $limit: Int, $nextToken: String) {
+        tagBySessionId(sessionId: $sessionId, sortDirection: $sortDirection, filter: $filter, limit: $limit, nextToken: $nextToken) {
           __typename
           items {
             __typename
             id
-            sessionID
+            sessionId
             name
           }
           nextToken
         }
       }`;
     const gqlAPIServiceArguments: any = {};
-    if (sessionID) {
-      gqlAPIServiceArguments.sessionID = sessionID;
+    if (sessionId) {
+      gqlAPIServiceArguments.sessionId = sessionId;
     }
     if (sortDirection) {
       gqlAPIServiceArguments.sortDirection = sortDirection;
@@ -975,10 +1134,23 @@ export class APIService {
           name
           data {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              values
+              time
+            }
             nextToken
           }
           tags {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              name
+            }
             nextToken
           }
         }
@@ -997,10 +1169,23 @@ export class APIService {
           name
           data {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              values
+              time
+            }
             nextToken
           }
           tags {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              name
+            }
             nextToken
           }
         }
@@ -1019,10 +1204,23 @@ export class APIService {
           name
           data {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              values
+              time
+            }
             nextToken
           }
           tags {
             __typename
+            items {
+              __typename
+              id
+              sessionId
+              name
+            }
             nextToken
           }
         }
@@ -1036,7 +1234,7 @@ export class APIService {
         onCreateData {
           __typename
           id
-          sessionID
+          sessionId
           values
           time
         }
@@ -1050,7 +1248,7 @@ export class APIService {
         onUpdateData {
           __typename
           id
-          sessionID
+          sessionId
           values
           time
         }
@@ -1064,7 +1262,7 @@ export class APIService {
         onDeleteData {
           __typename
           id
-          sessionID
+          sessionId
           values
           time
         }
@@ -1078,7 +1276,7 @@ export class APIService {
         onCreateTag {
           __typename
           id
-          sessionID
+          sessionId
           name
         }
       }`
@@ -1091,7 +1289,7 @@ export class APIService {
         onUpdateTag {
           __typename
           id
-          sessionID
+          sessionId
           name
         }
       }`
@@ -1104,7 +1302,7 @@ export class APIService {
         onDeleteTag {
           __typename
           id
-          sessionID
+          sessionId
           name
         }
       }`

@@ -4,9 +4,20 @@ query GetSession($id: ID!) {
     id
     name
     data {
+      items {
+        id
+        sessionId
+        values
+        time
+      }
       nextToken
     }
     tags {
+      items {
+        id
+        sessionId
+        name
+      }
       nextToken
     }
   }
@@ -20,6 +31,12 @@ query ListSessions(
     items {
       id
       name
+      data {
+        nextToken
+      }
+      tags {
+        nextToken
+      }
     }
     nextToken
   }
@@ -27,8 +44,8 @@ query ListSessions(
 query GetData($id: ID!) {
   getData(id: $id) {
     id
-    sessionID
-    value
+    sessionId
+    values
     time
   }
 }
@@ -40,8 +57,8 @@ query ListDatas(
   listDatas(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      sessionID
-      value
+      sessionId
+      values
       time
     }
     nextToken
@@ -50,7 +67,7 @@ query ListDatas(
 query GetTag($id: ID!) {
   getTag(id: $id) {
     id
-    sessionID
+    sessionId
     name
   }
 }
@@ -58,21 +75,21 @@ query ListTags($filter: ModelTagFilterInput, $limit: Int, $nextToken: String) {
   listTags(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      sessionID
+      sessionId
       name
     }
     nextToken
   }
 }
 query DataBySessionId(
-  $sessionID: ID
+  $sessionId: ID
   $sortDirection: ModelSortDirection
   $filter: ModelDataFilterInput
   $limit: Int
   $nextToken: String
 ) {
   dataBySessionId(
-    sessionID: $sessionID
+    sessionId: $sessionId
     sortDirection: $sortDirection
     filter: $filter
     limit: $limit
@@ -80,22 +97,22 @@ query DataBySessionId(
   ) {
     items {
       id
-      sessionID
-      value
+      sessionId
+      values
       time
     }
     nextToken
   }
 }
 query TagBySessionId(
-  $sessionID: ID
+  $sessionId: ID
   $sortDirection: ModelSortDirection
   $filter: ModelTagFilterInput
   $limit: Int
   $nextToken: String
 ) {
   tagBySessionId(
-    sessionID: $sessionID
+    sessionId: $sessionId
     sortDirection: $sortDirection
     filter: $filter
     limit: $limit
@@ -103,7 +120,7 @@ query TagBySessionId(
   ) {
     items {
       id
-      sessionID
+      sessionId
       name
     }
     nextToken
