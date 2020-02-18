@@ -17,7 +17,16 @@ export class Tab1Page implements OnInit {
     chartName: 'forceChartLive',
     chartInterval: null,
     chartRef: null,
-    forceData: [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0], [1, 0, 0], [1, 1, 0], [1, 2, 0], [1, 3, 0]]
+    forceData: [
+      {x: 3, y: 3, value: 0},
+      {x: 4, y: 3, value: 0},
+      {x: 5, y: 4, value: 0},
+      {x: 6, y: 3, value: 0},
+      {x: 7, y: 3, value: 0},
+      {x: 6, y: 2, value: 0},
+      {x: 5, y: 2, value: 0},
+      {x: 4, y: 2, value: 0}
+    ]
   };
 
   @ViewChild("imuVisualizationLive", { static: true } ) imuVisualizationRef: ElementRef;
@@ -32,7 +41,7 @@ export class Tab1Page implements OnInit {
 
   ngOnInit() {
     this.sensorReadings.data.subscribe( data => {
-      this.chartService.formatData( this.chart, data.slice(8) );
+      this.chartService.formatData( this.chart, data.slice(0, 8) );
     });
 
     this.imuVisualizer.setCanvasElement( this.imuVisualization, this.imuVisualizationRef );
@@ -56,7 +65,7 @@ export class Tab1Page implements OnInit {
     }
   }
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     if( "imu" == this.segment ) {
       this.imuVisualizer.renderAnimation( this.imuVisualization );
     } else {

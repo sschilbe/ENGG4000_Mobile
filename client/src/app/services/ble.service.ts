@@ -24,6 +24,7 @@ export class BleService {
   };
 
   scanning: boolean = false;
+  notificationSubscription;
 
   constructor(private ble: BLE,
     public navCtrl: NavController,
@@ -31,7 +32,7 @@ export class BleService {
     private ngZone: NgZone,
     private sensorReadings: SensorReadingsService,
     private dataManagement: DataManagementService ) {
-
+      
   }
 
   scan() {
@@ -64,11 +65,12 @@ export class BleService {
           this.scannedDevices.splice( index, 1 );
         }
         
+        // Artificial Delay for debugging
+        // Start Notifications for Force Sensor
+        setTimeout(() => { this.startDataNotifications(); }, 1000);
+
         // Start a new session for managing data
         this.dataManagement.startNewSession();
-
-        // Start Notifications for Force Sensor
-        this.startDataNotifications();
       },
     
       error => { console.log('disconnected'); console.log( error ); }
@@ -76,6 +78,7 @@ export class BleService {
   }
 
   disconnect( device ) {
+    this.notificationSubscription.unsubscribe();
     this.ble.disconnect( device.id ).then( device => {
       // Stop recording data, end the session
       this.dataManagement.endSession();
@@ -88,7 +91,8 @@ export class BleService {
 
   onDeviceDiscovered(device) {
     this.ngZone.run(() => {
-      if( 'name' in device ) {
+      if( 'name' in device && device['name'] === "UNB FMG Wearable" ) {
+        console.log(device);
         this.scannedDevices.push(device); // filling the list with discovered list
       }
     });
@@ -96,6 +100,7 @@ export class BleService {
 
   // If location permission is denied, you'll end up here
   async scanError(error) {
+    console.log("Scan error");
     let toast = await this.toastCtrl.create({
       message: 'Error scanning for Bluetooth low energy devices',
       position: 'bottom',
@@ -106,15 +111,23 @@ export class BleService {
 
   startDataNotifications() {
     var device = this.wearable;
-    this.ble.startNotification( device.id, device.characteristics[7].service, device.characteristics[7].characteristic ).subscribe(
+    this.notificationSubscription = this.ble.startNotification( device.id, device.characteristics[7].service, device.characteristics[7].characteristic ).subscribe(
       buffer => {
         console.log(buffer);
         var array = new Uint16Array(buffer);
         this.sensorReadings.updateData( array );
+    }, error => {
+      console.error( "Notification error: " + error );
     });
   }
 
   async enabled() {
+    this.ble.startStateNotifications().subscribe( state => {
+      if( state === "off" ) {
+        this.ble.enable();
+      }
+    });
+    
     this.ble.isEnabled().catch( await this.ble.enable().finally( () => {console.log( "BLE enabled" )} ) );
   }
 }

@@ -8,12 +8,12 @@ export enum SensorType {
 
 export class Data {
   id: string;
-  timestamp: Date;
+  time: string;
   values: Array<number>;
   
   constructor( params ) {
     this.id = params.id || null;
-    this.timestamp = params.timestamp;
+    this.time = params.time;
     this.values = params.values;
   }
 }

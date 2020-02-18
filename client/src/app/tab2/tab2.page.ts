@@ -20,7 +20,10 @@ export class Tab2Page {
     chartName: 'forceChartSaved',
     chartInterval: null,
     chartRef: null,
-    forceData: [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0], [1, 0, 0], [1, 1, 0], [1, 2, 0], [1, 3, 0]]
+    forceData: [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0], [0, 4, 0], [0, 5, 0], [0, 6, 0], [0, 7, 0],
+                [1, 0, 0], [1, 1, 0], [1, 2, 0], [1, 3, 0], [1, 4, 0], [1, 5, 0], [1, 6, 0], [1, 7, 0],
+                [2, 0, 0], [2, 1, 0], [2, 2, 0], [2, 3, 0], [2, 4, 0], [2, 5, 0], [2, 6, 0], [2, 7, 0],
+                [3, 0, 0], [3, 1, 0], [3, 2, 0], [3, 3, 0], [3, 4, 0], [3, 5, 0], [3, 6, 0], [3, 7, 0]]
   }
 
   // IMU Visualization
@@ -43,6 +46,7 @@ export class Tab2Page {
 
   sessions : Array<Session>;
   selectedSession : Session;
+  nextToken = null;
 
   // Reference to slider in view
   @ViewChild('slider', { static: true } ) slider: IonRangeSliderComponent;
@@ -56,7 +60,6 @@ export class Tab2Page {
     // Retrieve all of the current sessions from the DB
     this.apiService.ListSessions( undefined, 50 ).then( query => {
       this.sessions = query.items.map( item => <Session>{ name: item.name, id: item.id } );
-      this.selectedSession = this.sessions[0];
     });
 
     // Subscribe to any new sessions that are created so that they can be added to the list of sessions
@@ -101,8 +104,9 @@ export class Tab2Page {
 
     // Check if there is data for this session, if not retrieve it from the DB
     if( this.selectedSession.data == null ) {
-      this.apiService.DataBySessionId( this.selectedSession.id, undefined, undefined, 1000 ).then( query => {
-        console.log( query );
+      this.apiService.DataBySession( this.selectedSession.id, undefined, undefined, undefined, 1000 ).then( query => {
+        this.selectedSession.data = query.items;
+        this.nextToken = query.nextToken;
       });
     }
 

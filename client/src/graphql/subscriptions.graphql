@@ -4,20 +4,9 @@ subscription OnCreateSession {
     id
     name
     data {
-      items {
-        id
-        sessionId
-        values
-        time
-      }
       nextToken
     }
     tags {
-      items {
-        id
-        sessionId
-        name
-      }
       nextToken
     }
   }
@@ -27,20 +16,9 @@ subscription OnUpdateSession {
     id
     name
     data {
-      items {
-        id
-        sessionId
-        values
-        time
-      }
       nextToken
     }
     tags {
-      items {
-        id
-        sessionId
-        name
-      }
       nextToken
     }
   }
@@ -50,20 +28,9 @@ subscription OnDeleteSession {
     id
     name
     data {
-      items {
-        id
-        sessionId
-        values
-        time
-      }
       nextToken
     }
     tags {
-      items {
-        id
-        sessionId
-        name
-      }
       nextToken
     }
   }

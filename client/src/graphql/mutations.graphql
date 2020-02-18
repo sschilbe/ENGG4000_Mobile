@@ -23,20 +23,9 @@ mutation CreateSession(
     id
     name
     data {
-      items {
-        id
-        sessionId
-        values
-        time
-      }
       nextToken
     }
     tags {
-      items {
-        id
-        sessionId
-        name
-      }
       nextToken
     }
   }
@@ -49,20 +38,9 @@ mutation UpdateSession(
     id
     name
     data {
-      items {
-        id
-        sessionId
-        values
-        time
-      }
       nextToken
     }
     tags {
-      items {
-        id
-        sessionId
-        name
-      }
       nextToken
     }
   }
@@ -75,20 +53,9 @@ mutation DeleteSession(
     id
     name
     data {
-      items {
-        id
-        sessionId
-        values
-        time
-      }
       nextToken
     }
     tags {
-      items {
-        id
-        sessionId
-        name
-      }
       nextToken
     }
   }

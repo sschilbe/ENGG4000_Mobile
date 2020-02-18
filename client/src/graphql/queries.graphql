@@ -4,20 +4,9 @@ query GetSession($id: ID!) {
     id
     name
     data {
-      items {
-        id
-        sessionId
-        values
-        time
-      }
       nextToken
     }
     tags {
-      items {
-        id
-        sessionId
-        name
-      }
       nextToken
     }
   }
@@ -31,12 +20,6 @@ query ListSessions(
     items {
       id
       name
-      data {
-        nextToken
-      }
-      tags {
-        nextToken
-      }
     }
     nextToken
   }
@@ -81,15 +64,17 @@ query ListTags($filter: ModelTagFilterInput, $limit: Int, $nextToken: String) {
     nextToken
   }
 }
-query DataBySessionId(
+query DataBySession(
   $sessionId: ID
+  $time: ModelStringKeyConditionInput
   $sortDirection: ModelSortDirection
   $filter: ModelDataFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  dataBySessionId(
+  dataBySession(
     sessionId: $sessionId
+    time: $time
     sortDirection: $sortDirection
     filter: $filter
     limit: $limit
@@ -104,14 +89,14 @@ query DataBySessionId(
     nextToken
   }
 }
-query TagBySessionId(
+query TagBySession(
   $sessionId: ID
   $sortDirection: ModelSortDirection
   $filter: ModelTagFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  tagBySessionId(
+  tagBySession(
     sessionId: $sessionId
     sortDirection: $sortDirection
     filter: $filter

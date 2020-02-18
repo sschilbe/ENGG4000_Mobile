@@ -6,7 +6,7 @@ type Session @model {
 }
 
 type Data @model 
-  @key(name: "bySession", fields: ["sessionId"], queryField: "dataBySessionId")
+  @key(name: "bySession", fields: ["sessionId", "time"], queryField: "dataBySession")
 {  
   id: ID!
   sessionId: ID!
@@ -22,7 +22,7 @@ input CreateDataInput {
 }
 
 type Tag @model
-  @key(name: "bySession", fields: ["sessionId"], queryField: "tagBySessionId")
+  @key(name: "bySession", fields: ["sessionId"], queryField: "tagBySession")
 {
   id: ID!
   sessionId: ID!

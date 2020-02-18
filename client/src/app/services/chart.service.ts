@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import * as Highcharts from 'highcharts';
+import * as Highcharts from 'highcharts/highstock';
 import Heatmap from 'highcharts/modules/heatmap';
+import Tilemap from 'highcharts/modules/tilemap'
 Heatmap(Highcharts)
+Tilemap(Highcharts)
 
 export type Chart = {
   chartInterval: any;
@@ -21,8 +23,9 @@ export class ChartService {
   }
 
   formatData( chart: Chart, newData ) {
+    console.log( "Format data: " + newData );
     for( let i in chart.forceData ) {
-      chart.forceData[i][2] = newData[i];
+      chart.forceData[i].value = newData[i];
     }
   }
 
@@ -45,7 +48,7 @@ export class ChartService {
     if( chart.chartName === 'forceChartLive') {
       chart.chartRef = Highcharts.chart('forceChartLive', {
         chart: {
-          type: 'heatmap',
+          type: 'tilemap',
           animation: false,
           marginTop: 0,
           marginBottom: 80,
@@ -53,7 +56,8 @@ export class ChartService {
         },
   
         series: [{
-          type: 'heatmap',
+          type: 'tilemap',
+          tileShape: 'circle',
           name: 'Force Data',
           borderWidth: 1,
           data: [],
@@ -77,10 +81,11 @@ export class ChartService {
         },
   
         xAxis: {
+          visible: false
         },
         yAxis: {
           title: null,
-          reversed: true
+          visible: false
         },
         colorAxis: {
           min: 0,
@@ -93,12 +98,10 @@ export class ChartService {
         },
   
         legend: {
-          align: 'right',
-          layout: 'vertical',
+          align: 'center',
+          layout: 'horizontal',
           margin: 0,
-          verticalAlign: 'top',
-          y: 25,
-          symbolHeight: 280
+          symbolWidth: 280
         },
   
         exporting: {
@@ -116,7 +119,11 @@ export class ChartService {
           animation: false,
           marginTop: 0,
           marginBottom: 30,
-          plotBorderWidth: 1
+          plotBorderWidth: 1,
+          scrollablePlotArea: {
+            minWidth: 400,
+            scrollPositionX: 1
+          }
         },
   
         series: [{
@@ -125,6 +132,8 @@ export class ChartService {
           borderWidth: 1,
           data: [],
           dataLabels: {
+            overflow: 'none',
+            crop: true,
             enabled: false, // Turn off the data labels
             color: '#FFFFFF',
             style: {
@@ -144,6 +153,10 @@ export class ChartService {
         },
   
         xAxis: {
+          categories: ['A', 'B', 'C', 'D', 'E'],
+          scrollbar: {
+            enabled: true
+          }
         },
         yAxis: {
           title: null,
@@ -160,12 +173,10 @@ export class ChartService {
         },
   
         legend: {
-          align: 'right',
-          layout: 'vertical',
-          margin: 0,
-          verticalAlign: 'top',
-          y: 25,
-          symbolHeight: 220
+          align: 'center',
+          layout: 'horizontal',
+          margin: 10,
+          symbolWidth: 280
         },
   
         exporting: {
@@ -183,8 +194,8 @@ export class ChartService {
   reset( chart: Chart ) {
     this.chart( chart );
     clearInterval( chart.chartInterval );
-    setInterval( () => {
-      chart.chartInterval = chart.chartRef.series[0].setData( chart.forceData, true, false, false );
+    chart.chartInterval = setInterval( () => {
+      chart.chartRef.series[0].setData( chart.forceData, true, false, false );
     }, 20 );
   }
 }

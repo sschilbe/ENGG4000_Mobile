@@ -10,7 +10,7 @@ export class Tab3Page {
 
   enabledInterval = null;
   constructor( private ble : BleService ) {
-
+    this.ble.enabled();
   }
 
   ionViewWillEnter() {
@@ -19,7 +19,6 @@ export class Tab3Page {
   }
 
   ionViewDidEnter() {
-    this.ble.enabled();
     console.log( this.ble.wearable );
   }
 }

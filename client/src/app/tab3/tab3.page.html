@@ -3,7 +3,7 @@
     <ion-title>
       Devices
     </ion-title>
-    <ion-button (click)="ble.scan()" [disabled]="ble.scanning" slot="end">
+    <ion-button (click)="ble.scan()" [disabled]="ble.scanning || ble.wearable.name != 'Not Connected'" slot="end">
       <ion-icon name="Bluetooth"></ion-icon>
       <ion-label>{{ble.scanning ? 'Scanning' : 'Scan'}}</ion-label>
     </ion-button>
@@ -21,18 +21,6 @@
         Disconnect
       </ion-button>
     </ion-card-content>
-  </ion-card>
-  
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Human Machine Interface</ion-card-title>
-    </ion-card-header>
-    <ion-card-content >
-      {{ble.hmi.name}}
-      <ion-button *ngIf="ble.hmi.name != 'Not Connected'" (click)="ble.disconnect( ble.hmi )" class="ion-float-right" center>
-        Disconnect
-      </ion-button>
-    </ion-card-content>  
   </ion-card>
 
   <ion-list>
