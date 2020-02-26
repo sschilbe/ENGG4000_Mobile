@@ -20,36 +20,20 @@
 
   <div>
     <ion-card [hidden]="segment != 'force'">
-      <div id="forceChartSaved" style="width:100%; height:375px;"></div>
+      <div id="forceChartSaved" style="width:100%; height:490px;"></div>
     </ion-card>
   
     <ion-card [hidden]="segment != 'imu'">
-      <div #imuVisualizationSaved style="width:100%; height:375px;"></div>
+      <div #imuVisualizationSaved style="width:100%; height:490px;"></div>
     </ion-card>
   </div>
 
   <div>
     <ion-row>
-      <ion-col size="12">
-        <ion-range-slider #slider [disable]="rangeMin == rangeMax" [min]="rangeMin" [max]="rangeMax" [(from)]="rangeVal" [prettify]="sliderFormat" (onChange)="sliderChange()"></ion-range-slider>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-select (ionChange)="sessionChanged($event)" placeholder="Select a session">
+      <ion-select #select [interfaceOptions]="selectOptions" (ionChange)="sessionChanged($event)" placeholder="Select a session">
         <ion-select-option *ngFor="let session of sessions" [value]="session">{{session.name}}</ion-select-option>
       </ion-select>
     </ion-row>
   </div>
 
-  <ion-card>
-    <div>
-      <ion-button (click)="playorPause()" [ngClass]="{'button-outline': playing}" [disabled]="rangeMin == rangeMax">
-        <ion-icon slot="icon-only" name="play"></ion-icon>
-        <ion-icon slot="icon-only" name="pause"></ion-icon>
-      </ion-button>
-      <ion-button (click)="restart()" [disabled]="rangeMin == rangeMax">
-        <ion-icon slot="icon-only" name="refresh"></ion-icon>
-      </ion-button>
-    </div>
-  </ion-card>
 </ion-content>

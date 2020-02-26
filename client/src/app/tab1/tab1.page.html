@@ -6,8 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  
+<ion-content [ngClass]="!ble.connected ? 'blurred' : ''">  
   <ion-segment [(ngModel)]="segment" (ionChange)="onSegmentChanged()">
     <!--Default display force data-->
     <ion-segment-button value="force" checked>

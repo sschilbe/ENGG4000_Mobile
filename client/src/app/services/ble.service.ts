@@ -25,6 +25,7 @@ export class BleService {
 
   scanning: boolean = false;
   notificationSubscription;
+  connected: boolean = false;
 
   constructor(private ble: BLE,
     public navCtrl: NavController,
@@ -32,7 +33,7 @@ export class BleService {
     private ngZone: NgZone,
     private sensorReadings: SensorReadingsService,
     private dataManagement: DataManagementService ) {
-      
+    this.connected = false;
   }
 
   scan() {
@@ -51,6 +52,7 @@ export class BleService {
     this.ble.connect( device.id ).subscribe(
       peripheralData => {
         this.wearable = peripheralData;
+        this.connected = true;
         console.log( peripheralData );
 
         // Request a larger MTU size to facilitate long characteristics
@@ -73,17 +75,14 @@ export class BleService {
         this.dataManagement.startNewSession();
       },
     
-      error => { console.log('disconnected'); console.log( error ); }
+      error => { console.log('disconnected'); console.log( error ); this.connected = false; }
     );
   }
 
   disconnect( device ) {
     this.notificationSubscription.unsubscribe();
     this.ble.disconnect( device.id ).then( device => {
-      // Stop recording data, end the session
-      this.dataManagement.endSession();
-      
-      console.log( device );
+      this.connected = false;
     });
 
     this.wearable = {name: not_connected};
@@ -113,7 +112,6 @@ export class BleService {
     var device = this.wearable;
     this.notificationSubscription = this.ble.startNotification( device.id, device.characteristics[7].service, device.characteristics[7].characteristic ).subscribe(
       buffer => {
-        console.log(buffer);
         var array = new Uint16Array(buffer);
         this.sensorReadings.updateData( array );
     }, error => {

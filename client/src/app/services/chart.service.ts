@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 
-import * as Highcharts from 'highcharts/highstock';
+import * as Highcharts from 'highcharts/highcharts';
 import Heatmap from 'highcharts/modules/heatmap';
 import Tilemap from 'highcharts/modules/tilemap'
+import HighchartsBoost from "highcharts/modules/boost";
+
+HighchartsBoost(Highcharts)
 Heatmap(Highcharts)
 Tilemap(Highcharts)
 
@@ -10,7 +13,7 @@ export type Chart = {
   chartInterval: any;
   chartName: String;
   chartRef: any;
-  forceData: any[];
+  data: any[];
 };
 
 @Injectable({
@@ -23,9 +26,8 @@ export class ChartService {
   }
 
   formatData( chart: Chart, newData ) {
-    console.log( "Format data: " + newData );
-    for( let i in chart.forceData ) {
-      chart.forceData[i].value = newData[i];
+    for( let i in chart.data ) {
+      chart.data[i].value = newData[i];
     }
   }
 
@@ -59,7 +61,6 @@ export class ChartService {
           type: 'tilemap',
           tileShape: 'circle',
           name: 'Force Data',
-          borderWidth: 1,
           data: [],
           dataLabels: {
             enabled: false, // Turn off the data labels
@@ -112,28 +113,33 @@ export class ChartService {
           enabled: false
         }
       });
-    } else {
+    } else if (chart.chartName === 'forceChartSaved') {
       chart.chartRef = Highcharts.chart('forceChartSaved', {
         chart: {
           type: 'heatmap',
           animation: false,
           marginTop: 0,
-          marginBottom: 30,
-          plotBorderWidth: 1,
-          scrollablePlotArea: {
-            minWidth: 400,
-            scrollPositionX: 1
-          }
+          marginBottom: 80,
+          panning: {
+            enabled: true
+          },
+          pinchType: 'x'
         },
-  
+        boost: {
+          useGPUTranslations: true
+        },
         series: [{
           type: 'heatmap',
           name: 'Force Data',
-          borderWidth: 1,
-          data: [],
+          boostThreshold: 500,
+          states: {
+            hover: {
+              enabled: false
+            }
+          },
+          data: chart.data,
+          colsize: 14,
           dataLabels: {
-            overflow: 'none',
-            crop: true,
             enabled: false, // Turn off the data labels
             color: '#FFFFFF',
             style: {
@@ -144,7 +150,7 @@ export class ChartService {
   
         plotOptions: {
             series: {
-              turboThreshold: 0
+              turboThreshold: Number.MAX_VALUE
             }
         },
   
@@ -153,14 +159,16 @@ export class ChartService {
         },
   
         xAxis: {
-          categories: ['A', 'B', 'C', 'D', 'E'],
-          scrollbar: {
-            enabled: true
+          type: "datetime",
+          showFirstLabel: false,
+          dateTimeLabelFormats: {
+            millisecond: '%M:%S.%L'
           }
         },
         yAxis: {
           title: null,
-          reversed: true
+          //reversed: true,
+          visible: false
         },
         colorAxis: {
           min: 0,
@@ -175,7 +183,7 @@ export class ChartService {
         legend: {
           align: 'center',
           layout: 'horizontal',
-          margin: 10,
+          margin: 14,
           symbolWidth: 280
         },
   
@@ -184,9 +192,19 @@ export class ChartService {
         },
   
         tooltip: {
-          enabled: false
+          enabled: false,
+          followTouchMove: false
         }
       });
+
+      chart.chartRef.zoomOut = function() {
+        // Get the current extremes so the map doesn't shift back
+        var extremes = chart.chartRef.xAxis[0].getExtremes();
+        chart.chartRef.xAxis[0].setExtremes(extremes.min, extremes.min + Math.min( chart.data.length/8 * 14 - extremes.min, 1000*14 ) );
+      }
+
+    } else {
+      // Add in information for IMU line graph
     }
   }
 
@@ -195,7 +213,7 @@ export class ChartService {
     this.chart( chart );
     clearInterval( chart.chartInterval );
     chart.chartInterval = setInterval( () => {
-      chart.chartRef.series[0].setData( chart.forceData, true, false, false );
+      chart.chartRef.series[0].setData( chart.data, true, false, false );
     }, 20 );
   }
 }

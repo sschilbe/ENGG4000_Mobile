@@ -21,7 +21,7 @@ export class DataManagementService {
   startNewSession() {
     // Guard against case where there is a session in progress when this is called
     if( this.currentSession != null ) {
-      this.endSession();
+      this.endSession( "" );
     }
 
     // Create a session in the DB
@@ -46,13 +46,25 @@ export class DataManagementService {
   }
 
 
-  endSession() {
+  endSession( title: string) {
     // Guard against current session not being set
     if( this.currentSession == null ) {
       return;
     }
 
     this.dataSubscription.unsubscribe();
+
+    // Update the session name if given a title
+    if( title != "" ) {
+      this.apiService.UpdateSession({
+        id: this.currentSession.id,
+        name: title
+      }).then( () => {
+        console.log( "Session title updated successfully" );
+      }, () => {
+        console.log( "Error updating session title" );
+      });
+    }
 
     // Chunk up the data into 25 reading blocks to conform to the limit listed here: https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_BatchWriteItem.html
     var i,length,chunk = 25;

@@ -17,7 +17,7 @@
     </ion-card-header>
     <ion-card-content>
       {{ble.wearable.name}}
-      <ion-button *ngIf="ble.wearable.name != 'Not Connected'" (click)="ble.disconnect( ble.wearable )" class="ion-float-right" center>
+      <ion-button *ngIf="ble.wearable.name != 'Not Connected'" (click)="saveSession()" class="ion-float-right" center>
         Disconnect
       </ion-button>
     </ion-card-content>

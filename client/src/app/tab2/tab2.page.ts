@@ -1,11 +1,10 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { ChartService, Chart } from '../services/chart.service';
 import { ImuVisualizationService, Visualization } from '../services/imu-visualization.service';
-import {IonRangeSliderComponent} from "ng2-ion-range-slider";
 
-import * as moment from 'moment';
 import { Session } from '../classes/item.class';
 import { APIService } from '../services/api.service';
+import { IonSelect } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab2',
@@ -20,37 +19,34 @@ export class Tab2Page {
     chartName: 'forceChartSaved',
     chartInterval: null,
     chartRef: null,
-    forceData: [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0], [0, 4, 0], [0, 5, 0], [0, 6, 0], [0, 7, 0],
+    data: [[0, 0, 0], [0, 1, 0], [0, 2, 0], [0, 3, 0], [0, 4, 0], [0, 5, 0], [0, 6, 0], [0, 7, 0],
                 [1, 0, 0], [1, 1, 0], [1, 2, 0], [1, 3, 0], [1, 4, 0], [1, 5, 0], [1, 6, 0], [1, 7, 0],
                 [2, 0, 0], [2, 1, 0], [2, 2, 0], [2, 3, 0], [2, 4, 0], [2, 5, 0], [2, 6, 0], [2, 7, 0],
-                [3, 0, 0], [3, 1, 0], [3, 2, 0], [3, 3, 0], [3, 4, 0], [3, 5, 0], [3, 6, 0], [3, 7, 0]]
+                [3, 0, 0], [3, 1, 0], [3, 2, 0], [3, 3, 0], [3, 4, 0], [3, 5, 0], [3, 6, 0], [3, 7, 0],
+                [4, 0, 0], [4, 1, 0], [4, 2, 0], [4, 3, 0], [4, 4, 0], [4, 5, 0], [4, 6, 0], [4, 7, 0],
+                [5, 0, 0], [5, 1, 0], [5, 2, 0], [5, 3, 0], [5, 4, 0], [5, 5, 0], [5, 6, 0], [5, 7, 0],
+                [6, 0, 0], [6, 1, 0], [6, 2, 0], [6, 3, 0], [6, 4, 0], [6, 5, 0], [6, 6, 0], [6, 7, 0],
+                [7, 0, 0], [7, 1, 0], [7, 2, 0], [7, 3, 0], [7, 4, 0], [7, 5, 0], [7, 6, 0], [7, 7, 0],
+                [8, 0, 0], [8, 1, 0], [8, 2, 0], [8, 3, 0], [8, 4, 0], [8, 5, 0], [8, 6, 0], [8, 7, 0],
+                [9, 0, 0], [9, 1, 0], [9, 2, 0], [9, 3, 0], [9, 4, 0], [9, 5, 0], [9, 6, 0], [9, 7, 0]]
   }
 
   // IMU Visualization
   @ViewChild("imuVisualizationSaved", { static: true } ) imuVisualizationRef: ElementRef;
   imuVisualization: Visualization = new Visualization();
 
-  // Management for current time
-  start: moment.Moment = moment();
-  end: moment.Moment = moment();
-
-  // Progress through selected range
-  rangeMin = moment("000000", "hhmmss").valueOf();
-  rangeMax = moment("000000", "hhmmss").valueOf();
-  rangeVal = moment("000000", "hhmmss").valueOf();
-
   interval;
-
-  // Currently playing data
-  playing : boolean = false;
 
   sessions : Array<Session>;
   selectedSession : Session;
   nextToken = null;
 
-  // Reference to slider in view
-  @ViewChild('slider', { static: true } ) slider: IonRangeSliderComponent;
+  selectOptions = {
+    header: "Select Session"
+  };
 
+  // Select
+  @ViewChild("select", { static: true } ) select: IonSelect;
   constructor(private chartService: ChartService,
               private imuVisualizer: ImuVisualizationService,
               private apiService: APIService) {
@@ -72,33 +68,7 @@ export class Tab2Page {
     });
   }
 
-  playorPause() {
-    this.playing = !this.playing;
-    if( this.playing ) {
-      this.interval = setInterval( () => {
-        this.rangeVal = this.rangeVal.valueOf() + 1000;
-        this.slider.update({from: this.rangeVal});
-      }, 1000 );
-    } else {
-      clearInterval( this.interval );
-    }
-  }
-
-  pause() {
-    this.playing = false;
-    clearInterval( this.interval );
-  }
-
-  restart() {
-    this.pause();
-    this.rangeVal = this.rangeMin.valueOf() + 1;
-    this.slider.update({from: this.rangeVal}); // Bug where this needs to be explicitly called even though it is dynamically modified by rangeVal
-    clearInterval( this.interval );
-  }
-
   sessionChanged( event ) {
-    this.pause()
-
     // Set the new session
     this.selectedSession = event.detail.value; // Assign value 
 
@@ -107,21 +77,24 @@ export class Tab2Page {
       this.apiService.DataBySession( this.selectedSession.id, undefined, undefined, undefined, 1000 ).then( query => {
         this.selectedSession.data = query.items;
         this.nextToken = query.nextToken;
+
+        // Change the data on the chart
+        this.chart.data = [];
+        for( var i = 0; i < this.selectedSession.data.length; i++) {
+          var data = this.selectedSession.data[i].values.slice(0, 8);
+          for( var j = 0; j < 8; j++ ) {
+            // With large amounts of data highcharts only accepts arrays as inputs
+            // therefore the below data is in the format [x,y,value]
+            this.chart.data.push( [i*14,j,data[j]] ); // Give each column 14 milliseconds to get roughly 70Hz
+          }
+        }
+
+        this.chart.chartRef.xAxis[0].setExtremes(0, Math.min( this.chart.data.length/8 * 14, 1000*14 ) );
+        this.chart.chartRef.series[0].setData( this.chart.data, true, false, false );
       });
     }
 
-    // Calculate the start and end time for this session
-  }
-  sliderFormat( num ) {
-    return moment( num ).format('HH:mm:ss');
-  }
-
-  sliderChange() {
-    this.pause();
-  }
-
-  updateSliderRange() {
-    this.rangeMax = moment("000000","hhmmss").add( moment.duration( this.end.diff( this.start ) ) ).valueOf()
+    
   }
   
   ngOnInit() {
@@ -150,18 +123,19 @@ export class Tab2Page {
     this.apiService.ListSessions().then( sessions => {
       this.sessions = sessions.items.map( item => <Session>{id: item.id, name: item.name });
     });
-  }
 
-  ionViewDidEnter() {
     if( "imu" == this.segment ) {
       this.imuVisualizer.renderAnimation( this.imuVisualization );
     } else {
-      this.chartService.reset( this.chart );
+      this.chartService.chart( this.chart );
     }
   }
 
+  ionViewDidEnter() {
+    this.select.open();
+  }
+
   ionViewDidLeave() {
-    this.pause();
     clearInterval( this.chart.chartInterval );
     this.imuVisualizer.stopAnimation( this.imuVisualization );  
   }
