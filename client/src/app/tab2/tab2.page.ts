@@ -5,6 +5,7 @@ import { ImuVisualizationService, Visualization } from '../services/imu-visualiz
 import { Session } from '../classes/item.class';
 import { APIService } from '../services/api.service';
 import { IonSelect } from '@ionic/angular';
+import { DatabaseService } from '../services/database.service';
 
 @Component({
   selector: 'app-tab2',
@@ -15,7 +16,7 @@ export class Tab2Page {
   segment: String;
 
   // Force Chart Data
-  chart: Chart = {
+  forceChart: Chart = {
     chartName: 'forceChartSaved',
     chartInterval: null,
     chartRef: null,
@@ -31,11 +32,21 @@ export class Tab2Page {
                 [9, 0, 0], [9, 1, 0], [9, 2, 0], [9, 3, 0], [9, 4, 0], [9, 5, 0], [9, 6, 0], [9, 7, 0]]
   }
 
-  // IMU Visualization
-  @ViewChild("imuVisualizationSaved", { static: true } ) imuVisualizationRef: ElementRef;
-  imuVisualization: Visualization = new Visualization();
-
-  interval;
+  imuChart: Chart = {
+    chartName: 'imuChartSaved',
+    chartInterval: null,
+    chartRef: null,
+    data: [ [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]],
+            [[1, 0], [1, 1], [1, 2], [1, 3], [1, 4], [1, 5], [1, 6], [1, 7]],
+            [[3, 0], [3, 1], [3, 2], [3, 3], [3, 4], [3, 5], [3, 6], [3, 7]],
+            [[2, 0], [2, 1], [2, 2], [2, 3], [2, 4], [2, 5], [2, 6], [2, 7]],
+            [[4, 0], [4, 1], [4, 2], [4, 3], [4, 4], [4, 5], [4, 6], [4, 7]],
+            [[5, 0], [5, 1], [5, 2], [5, 3], [5, 4], [5, 5], [5, 6], [5, 7]],
+            [[6, 0], [6, 1], [6, 2], [6, 3], [6, 4], [6, 5], [6, 6], [6, 7]],
+            [[7, 0], [7, 1], [7, 2], [7, 3], [7, 4], [7, 5], [7, 6], [7, 7]],
+            [[8, 0], [8, 1], [8, 2], [8, 3], [8, 4], [8, 5], [8, 6], [8, 7]],
+            [[9, 0], [9, 1], [9, 2], [9, 3], [9, 4], [9, 5], [9, 6], [9, 7]]]
+  }
 
   sessions : Array<Session>;
   selectedSession : Session;
@@ -49,9 +60,9 @@ export class Tab2Page {
   @ViewChild("select", { static: true } ) select: IonSelect;
   constructor(private chartService: ChartService,
               private imuVisualizer: ImuVisualizationService,
-              private apiService: APIService) {
+              private apiService: APIService,
+              private db: DatabaseService) {
     this.segment = "force";
-    this.imuVisualization.initialized = false;
 
     // Retrieve all of the current sessions from the DB
     this.apiService.ListSessions( undefined, 50 ).then( query => {
@@ -78,65 +89,62 @@ export class Tab2Page {
         this.selectedSession.data = query.items;
         this.nextToken = query.nextToken;
 
-        // Change the data on the chart
-        this.chart.data = [];
-        for( var i = 0; i < this.selectedSession.data.length; i++) {
-          var data = this.selectedSession.data[i].values.slice(0, 8);
-          for( var j = 0; j < 8; j++ ) {
-            // With large amounts of data highcharts only accepts arrays as inputs
-            // therefore the below data is in the format [x,y,value]
-            this.chart.data.push( [i*14,j,data[j]] ); // Give each column 14 milliseconds to get roughly 70Hz
-          }
-        }
-
-        this.chart.chartRef.xAxis[0].setExtremes(0, Math.min( this.chart.data.length/8 * 14, 1000*14 ) );
-        this.chart.chartRef.series[0].setData( this.chart.data, true, false, false );
+        this.updateChartData();
       });
+    } else {
+      this.updateChartData();
+    }
+  }
+
+  updateChartData() {
+    // Change the data on the chart
+    this.forceChart.data = [];
+    this.imuChart.data = [[],[],[],[],[],[]];
+    for( var i = 0; i < this.selectedSession.data.length; i++) {
+      var data = this.selectedSession.data[i].values.slice(0, 8);
+      for( var j = 0; j < 8; j++ ) {
+        // With large amounts of data highcharts only accepts arrays as inputs
+        // therefore the below data is in the format [x,y,value]
+        this.forceChart.data.push( [i*14,j,data[j]] ); // Give each column 14 milliseconds to get roughly 70Hz
+      }
+
+      data = this.selectedSession.data[i].values.slice(8,14);
+      for( var j = 0; j < 6; j++ ) {
+        // Add IMU data to imuChart
+        this.imuChart.data[j].push( [i*14,data[j]])
+      }
     }
 
-    
+    this.chartService.chart( this.forceChart );
+    this.chartService.chart( this.imuChart );
+
   }
-  
+
   ngOnInit() {
-    this.imuVisualizer.setCanvasElement( this.imuVisualization, this.imuVisualizationRef );
   }
 
   onSegmentChanged() {
-    if( "force" == this.segment ) {
-      this.chartService.chart( this.chart );
 
-      //  De-init IMU visualization
-      this.imuVisualizer.stopAnimation( this.imuVisualization );
-    } else {
-      //  De-init Chart
-      clearInterval( this.chart.chartInterval );
-
-      if( !this.imuVisualization.initialized ) {
-        this.imuVisualizer.initialiseWebGLObjectAndEnvironment( this.imuVisualization );
-      }
-
-      this.imuVisualizer.renderAnimation( this.imuVisualization );
-    }
   }
 
   ionViewWillEnter() {
     this.apiService.ListSessions().then( sessions => {
       this.sessions = sessions.items.map( item => <Session>{id: item.id, name: item.name });
+      this.select.open();
     });
 
     if( "imu" == this.segment ) {
-      this.imuVisualizer.renderAnimation( this.imuVisualization );
+      this.chartService.chart( this.imuChart );
     } else {
-      this.chartService.chart( this.chart );
+      this.chartService.chart( this.forceChart );
     }
   }
 
   ionViewDidEnter() {
-    this.select.open();
+
   }
 
   ionViewDidLeave() {
-    clearInterval( this.chart.chartInterval );
-    this.imuVisualizer.stopAnimation( this.imuVisualization );  
+
   }
 }

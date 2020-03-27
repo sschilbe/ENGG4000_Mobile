@@ -35,6 +35,8 @@ export class Tab1Page implements OnInit {
   @ViewChild("imuVisualizationLive", { static: true } ) imuVisualizationRef: ElementRef;
   imuVisualization: Visualization = new Visualization();
 
+  deviceConnected: Boolean = false;
+
   constructor(private sensorReadings: SensorReadingsService,
               private chartService: ChartService,
               private imuVisualizer: ImuVisualizationService,
@@ -51,6 +53,12 @@ export class Tab1Page implements OnInit {
       header: 'No Wearable Connected',
       message: 'There is <strong>no</strong> wearable connected. Connect one to view live data.',
       buttons: [
+        {
+          text: 'Dismiss',
+          handler: () => {
+
+          }
+        },
         {
           text: 'Devices',
           handler: () => {
@@ -98,7 +106,7 @@ export class Tab1Page implements OnInit {
   }
 
   ionViewDidEnter() {
-    if( !this.ble.connected ) {
+    if( !this.ble.connected.value ) {
       this.presentDeviceAlert();
     }
   }

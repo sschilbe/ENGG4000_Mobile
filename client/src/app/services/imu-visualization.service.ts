@@ -78,7 +78,7 @@ export class ImuVisualizationService {
 
     // CylinderGeometry class allows us to create a cylinder
     visualization.geometry = new THREE.CylinderGeometry( 5, 5, 20, 32 );
-    
+
     // Define the material (and its appearance) for drawing the geometry to the scene
     visualization.material = new THREE.MeshNormalMaterial();
 
@@ -90,6 +90,11 @@ export class ImuVisualizationService {
 
     // Define the depth position of the camera
     visualization.camera.position.z = 40;
+  }
+
+  rotate( visualization : Visualization, originalData : Uint16Array ) {
+    let convertedData = new Int16Array( originalData );
+    visualization.cylinder.rotation.x = convertedData[0];
   }
 
   /**
@@ -108,8 +113,8 @@ export class ImuVisualizationService {
     });
 
     // Define rotation speeds on x and y axes - lower values means lower speeds
-    visualization.cylinder.rotation.x += 0.05;
-    visualization.cylinder.rotation.y += 0.05;
+    //visualization.cylinder.rotation.x += 0.05;
+    //visualization.cylinder.rotation.y += 0.05;
 
     // Render the scene (will be called using the requestAnimationFrame method to ensure the cube is constantly animated)
     visualization.renderer.render( visualization.scene, visualization.camera );

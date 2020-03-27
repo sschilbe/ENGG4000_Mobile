@@ -43,10 +43,6 @@ export class ChartService {
 
   /* Chart the data */
   chart( chart: Chart ) {
-    if( chart.chartRef != null) {
-      return
-    }
-
     if( chart.chartName === 'forceChartLive') {
       chart.chartRef = Highcharts.chart('forceChartLive', {
         chart: {
@@ -204,7 +200,115 @@ export class ChartService {
       }
 
     } else {
-      // Add in information for IMU line graph
+      // The data has been formatted into a nested array of the following format
+      // [[[x,value],...],...] - This format allows for each axis of both the accelerometer and gyroscope
+      // to be represented as it's own data series
+      console.log( chart.data );
+
+      let aX, aY, aZ, gX, gY, gZ;
+      aX = chart.data[0];
+      aY = chart.data[1];
+      aZ = chart.data[2];
+      gX = chart.data[3];
+      gY = chart.data[4];
+      gZ = chart.data[5];
+
+      chart.chartRef = Highcharts.chart('imuChartSaved', {
+        chart: {
+          type: 'spline',
+          scrollablePlotArea: {
+            minWidth: 700
+          }
+        },
+
+        plotOptions: {
+          series: {
+            marker: {
+              enabled: false
+            }
+          }
+        },
+
+        series: [{
+          type: 'spline',
+          name: 'Acceleration (X)',
+          yAxis: 0,
+          data: aX
+        },
+        {
+          type: 'spline',
+          name: 'Acceleration (Y)',
+          yAxis: 0,
+          data: aY
+        },
+        {
+          type: 'spline',
+          name: 'Acceleration (Z)',
+          yAxis: 0,
+          data: aZ
+        },
+        {
+          type: 'spline',
+          name: 'Gyroscope (X)',
+          yAxis: 1,
+          data: gX
+        },
+        {
+          type: 'spline',
+          name: 'Gyroscope (Y)',
+          yAxis: 1,
+          data: gY
+        },
+        {
+          type: 'spline',
+          name: 'Gyroscope (Z)',
+          yAxis: 1,
+          data: gZ
+        }],
+
+        title: {
+          text: undefined
+        },
+  
+        xAxis: {
+          type: "datetime",
+          showFirstLabel: false,
+          dateTimeLabelFormats: {
+            millisecond: '%M:%S.%L'
+          },
+          width: "100%"
+        },
+        yAxis: [{
+          title: {
+            text: "Acceleration (g)"
+          },
+          labels: {
+            align: 'right'
+          }
+        },
+        {
+          title: {
+            text: "Rotation (Â°/s)"
+          },
+          labels: {
+            align: 'left'
+          },
+          opposite: true,
+
+        }],
+
+        legend: {
+          align: 'center',
+          layout: 'horizontal',
+          margin: 14,
+          symbolWidth: 200
+        },
+
+        tooltip: {
+          enabled: false,
+          followTouchMove: false
+        }
+      });
     }
   }
 

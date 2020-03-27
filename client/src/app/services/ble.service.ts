@@ -3,6 +3,7 @@ import { BLE } from '@ionic-native/ble/ngx'
 import { NavController, ToastController } from '@ionic/angular';
 import { SensorReadingsService } from '../services/sensor-readings.service';
 import { DataManagementService } from './data-management.service';
+import { BehaviorSubject } from 'rxjs';
 
 let not_connected = "Not Connected";
 
@@ -18,14 +19,9 @@ export class BleService {
     name: not_connected
   };
 
-  hmi : any = {
-    id: "",
-    name: not_connected
-  };
-
   scanning: boolean = false;
   notificationSubscription;
-  connected: boolean = false;
+  connected: BehaviorSubject<boolean>;
 
   constructor(private ble: BLE,
     public navCtrl: NavController,
@@ -33,7 +29,7 @@ export class BleService {
     private ngZone: NgZone,
     private sensorReadings: SensorReadingsService,
     private dataManagement: DataManagementService ) {
-    this.connected = false;
+    this.connected = new BehaviorSubject<boolean>(false);
   }
 
   scan() {
@@ -41,7 +37,7 @@ export class BleService {
 
     this.scanning = true;
     this.ble.scan([], 5).subscribe( // scanning for 5 seconds on one tap
-      device => this.onDeviceDiscovered(device), 
+      device =>{ this.onDeviceDiscovered(device); console.log( device )}, 
       error => this.scanError(error)
     );
 
@@ -52,11 +48,11 @@ export class BleService {
     this.ble.connect( device.id ).subscribe(
       peripheralData => {
         this.wearable = peripheralData;
-        this.connected = true;
+        this.connected.next( true );
         console.log( peripheralData );
 
         // Request a larger MTU size to facilitate long characteristics
-        this.ble.requestMtu(this.wearable.id, 40).then(() => {
+        this.ble.requestMtu(device.id, 40).then(() => {
           console.log("Accepted MTU size change");
         }, error => {
           console.log("Rejected MTU size change");
@@ -66,23 +62,23 @@ export class BleService {
         if( index > -1 ) {
           this.scannedDevices.splice( index, 1 );
         }
-        
-        // Artificial Delay for debugging
+
+        // Artificial Delay for debugging and to ensure MTU size change has taken effect
         // Start Notifications for Force Sensor
         setTimeout(() => { this.startDataNotifications(); }, 1000);
 
         // Start a new session for managing data
         this.dataManagement.startNewSession();
       },
-    
-      error => { console.log('disconnected'); console.log( error ); this.connected = false; }
+
+      error => { console.log('disconnected'); console.log( error ); this.connected.next( false ); }
     );
   }
 
   disconnect( device ) {
     this.notificationSubscription.unsubscribe();
     this.ble.disconnect( device.id ).then( device => {
-      this.connected = false;
+      this.connected.next(false);
     });
 
     this.wearable = {name: not_connected};
@@ -90,8 +86,7 @@ export class BleService {
 
   onDeviceDiscovered(device) {
     this.ngZone.run(() => {
-      if( 'name' in device && device['name'] === "UNB FMG Wearable" ) {
-        console.log(device);
+      if( 'name' in device ) {
         this.scannedDevices.push(device); // filling the list with discovered list
       }
     });

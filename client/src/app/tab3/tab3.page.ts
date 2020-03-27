@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { BleService } from '../services/ble.service';
 import { AlertController } from '@ionic/angular';
 import { DataManagementService } from '../services/data-management.service';
+import { DatabaseService } from '../services/database.service';
 
 @Component({
   selector: 'app-tab3',
@@ -13,6 +14,7 @@ export class Tab3Page {
   enabledInterval = null;
   constructor( private ble : BleService,
                private dataManagement: DataManagementService,
+               private db: DatabaseService,
                public  alertController: AlertController ) {
     this.ble.enabled();
   }
@@ -23,25 +25,27 @@ export class Tab3Page {
   }
 
   ionViewDidEnter() {
+    this.ble.enabled();
     console.log( this.ble.wearable );
   }
  
   saveSession() {
     this.ble.disconnect( this.ble.wearable );
-    
+
     // Open popup to get session name
     this.presentSessionEndAlert();
   }
 
   /* Present alert to get user to connect device */
   async presentSessionEndAlert() {
-    const alert = await this.alertController.create({
+    let alert : HTMLIonAlertElement = await this.alertController.create({
       header: 'End Session',
-      message: 'Enter a title for this session.',
+      message: '',
       backdropDismiss: false,
       inputs: [
         {
           name: "sessionTitle",
+          placeholder: "Enter Title For Session",
           type: "text"
         }
       ],
@@ -49,8 +53,15 @@ export class Tab3Page {
         {
           text: 'Confirm',
           handler: (alertData) => {
-            // Stop recording data, end the session
-            this.dataManagement.endSession(alertData.sessionTitle);
+            // Validate the session data here
+          if( this.db.renameSession( this.dataManagement.currentSession.id, alertData.sessionTitle ) ) {
+              // Stop recording data, end the session
+              this.dataManagement.endSession();
+            } else {
+              // This styling is not actually working right now
+              alert.message = "<font color='red'>Session name must be unique and not empty</font>"
+              return false;
+            }
           }
         }
       ]
