@@ -120,7 +120,7 @@ export class BleService {
         this.ble.enable();
       }
     });
-    
+
     this.ble.isEnabled().catch( await this.ble.enable().finally( () => {console.log( "BLE enabled" )} ) );
   }
 }

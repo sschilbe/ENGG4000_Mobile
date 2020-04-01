@@ -10,14 +10,14 @@ export class Data {
   id: string;
   time: string;
   values: Array<number>;
-  
+
   constructor( params ) {
     this.id = params.id || null;
     this.time = params.time;
     this.values = params.values;
   }
 }
-  
+
 export class Session {
   id: string;
   name: string;

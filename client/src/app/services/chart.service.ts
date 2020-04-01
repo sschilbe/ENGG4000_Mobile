@@ -93,18 +93,18 @@ export class ChartService {
           ],
           softMax: 4095
         },
-  
+
         legend: {
           align: 'center',
           layout: 'horizontal',
           margin: 0,
           symbolWidth: 280
         },
-  
+
         exporting: {
           enabled: false
         },
-  
+
         tooltip: {
           enabled: false
         }

@@ -27,7 +27,7 @@ export class DataManagementService {
     }
 
     // Create a session in the DB
-    this.apiService.CreateSession({ 
+    this.apiService.CreateSession({
       name: moment().toISOString()
     }).then( (session) => {
       this.currentSession = new Session( session );
